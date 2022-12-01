@@ -53,22 +53,7 @@ php artisan key:generate
 php artisan storage:link
 ```
 
-## To remove the documentation
-
--   windows
-    ```bash
-    rmdir /s docs
-    del README.md
-    echo "" > README.md
-    ```
--   linux
-    ```bash
-    rm -r docs
-    rm README.md
-    touch README.md
-    ```
-
-## Just Reminders 😅
+## Just Reminders 
 
 -   Make Hard Visits with
 
@@ -94,12 +79,3 @@ php artisan storage:link
 
     I made a global alias '@' for absolute path imports.
 
-## How it looks
-
-<img src='docs/login-page.png' />
-
-<img src='docs/home-page.png' />
-
-<img src ='docs/profile-page.png' />
-
-<img src='docs/menu-page.png' />
