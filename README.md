@@ -12,14 +12,14 @@ This starter is powered by React, Inertia, Tailwind and Laravel.
 
 ### Includes
 
--   Laravel v8.40
+-   Laravel v9.19
 -   Laravel fortify v1.7
 -   Laravel sail v1.0.1
 -   React v17.0.2
 -   React prop-types v15.7.2
 -   Inertia v0.8.7
 -   Inertia-react v0.5.12
--   Inertia-laravel v0.4.2
+-   Inertia-laravel v0.5.4
 -   Inertia-progress v0.2.4
 -   Tailwindcss v2.1.2
 -   Ziggy v1.2
