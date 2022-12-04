@@ -1,0 +1,18 @@
+i.fa.fa-sort-desc {
+    position: relative;
+    left: -8px;
+    cursor: pointer;
+    top: 2px;
+}
+i.fa.fa-sort-asc{
+  position: relative;
+    left: 2px;
+    cursor: pointer;
+    top: -1px;
+}
+/*.sorting-outer{
+  position: absolute;
+}*/
+.sorting-outer a{
+  color: #ef8157 ;
+}

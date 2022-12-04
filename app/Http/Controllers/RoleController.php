@@ -30,7 +30,7 @@ class RoleController extends Controller
          //       return abort('401');
          // }
 
-         $roles = Role::all(); 
+         $roles = Role::paginate((new Role())->perPage); 
          return Inertia::render('roles/Index',['roles' => $roles]);
     }
 

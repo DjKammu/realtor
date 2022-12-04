@@ -14,7 +14,7 @@ const Index = (props) => {
         }
 
         const id = e.target.id;
-        Inertia.post('/properties/'+id, {
+        Inertia.post('/showing-status/'+id, {
             _method: 'delete',
             preserveScroll: true,
           },{
@@ -24,19 +24,19 @@ const Index = (props) => {
      
  
 
-     const { properties } = usePage().props  
+     const { statuses } = usePage().props  
 
     return (
         <div>
             <Layout>
                 {/* check app.css for related css */}
                 <div className="header">
-                    <h1 className="header-text">Properties</h1>
+                    <h1 className="header-text">Showing Statuses</h1>
                 </div>
                        <div className="">
                            <div className="p-6 bg-white border-b border-gray-200">
-                            <InertiaLink href="/properties/create" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
-                            Create Property
+                            <InertiaLink href="/showing-status/create" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                            Create Showing Status
                             </InertiaLink>
                             </div>
                             <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -60,19 +60,19 @@ const Index = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {properties.data.map((property,key) => (
+                                            {statuses.data.map((status,key) => (
                                                 <tr key={key}>
-                                                    <td className="border px-4 py-2">{ property.id }</td>
-                                                    <td className="border px-4 py-2">{ property.name }</td>
-                                                    <td className="border px-4 py-2">{ property.account_number }
+                                                    <td className="border px-4 py-2">{ status.id }</td>
+                                                    <td className="border px-4 py-2">{ status.name }</td>
+                                                    <td className="border px-4 py-2">{ status.account_number }
                                                     </td>
                                                     <td className="border px-4 py-2">        
-                                                        <InertiaLink href={`/properties/${property.id}`} >
+                                                        <InertiaLink href={`/showing-status/${status.id}`} >
                                                         <i className="fa fa-edit text-success"></i>
                                                         </InertiaLink> 
                                                       </td>
                                                       <td className="border px-4 py-2">
-                                                        <form onSubmit={deleteFunc} id={property.id}>
+                                                        <form onSubmit={deleteFunc} id={status.id}>
                                                               <button
                                                                 className="flex items-center px-3 py-1 text-sm font-medium text-indigo-500 hover:text-indigo-600"
                                                                 type="submit"
@@ -86,7 +86,7 @@ const Index = (props) => {
                                         </tbody>
                                     </table>
 
-                                    <Pagination class="mt-6" links={properties.links} />
+                                    <Pagination class="mt-6" links={statuses.links} />
           
                                 </div>
                             </div>

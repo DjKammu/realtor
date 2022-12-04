@@ -17,21 +17,24 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('auth/Login');
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
 });
+
 
 // Set Up Routes // 
 
-Route::inertia('/setup', 'Setup');
-// Route::inertia('/roles', 'roles/Index');
+Route::inertia('/setup', 'Setup')->middleware('auth');
 
 Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
 Route::resource('properties', App\Http\Controllers\PropertyController::class);
+Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
+Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
 
 
 // Profile Routes 

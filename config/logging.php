@@ -34,6 +34,9 @@ return [
     |
     */
 
+
+    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+
     'channels' => [
         'stack' => [
             'driver' => 'stack',

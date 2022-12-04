@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../../layouts/Layout';
 import {Inertia} from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react'
+import Pagination from '@/Pagination'
 
 const Index = (props) => {
       const deleteFunc = (e) => {
@@ -43,7 +44,7 @@ const Index = (props) => {
                                         <thead>
                                             <tr className="bg-gray-100">
                                                 <th className="px-4 py-2 w-20">No.</th>
-                                                <th className="px-4 py-2">Name</th>
+                                                <th className="px-4 py-2">Name </th>
                                                 <th className="px-4 py-2">Permission</th>
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
@@ -51,7 +52,7 @@ const Index = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {roles.map((role,key) => (
+                                            {roles.data.map((role,key) => (
                                                 <tr key={key}>
                                                     <td className="border px-4 py-2">{ role.id }</td>
                                                     <td className="border px-4 py-2">{ role.name }</td>
@@ -76,6 +77,8 @@ const Index = (props) => {
                                             ))}
                                         </tbody>
                                     </table>
+
+                                    <Pagination class="mt-6" links={roles.links} />
           
                                 </div>
                             </div>

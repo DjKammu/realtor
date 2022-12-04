@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Property;
+use App\Models\LeasingStatus;
 use Inertia\Inertia;
 use Gate;
 
 
-class PropertyController extends Controller
+class LeasingStatusController extends Controller
 {
      /**
      * Create a new controller instance.
@@ -31,7 +31,7 @@ class PropertyController extends Controller
                return abort('401');
          }
 
-         $properties = Property::query();
+         $statuses = LeasingStatus::query();
 
          $orderBy = 'name';  
          $order ='asc' ;
@@ -44,9 +44,9 @@ class PropertyController extends Controller
              : request()->order;
         }
         
-         $properties = $properties->orderBy($orderBy,$order)->paginate((new Property())->perPage); 
+         $statuses = $statuses->orderBy($orderBy,$order)->paginate((new LeasingStatus())->perPage); 
 
-         return Inertia::render('properties/Index',['properties' => $properties]);
+         return Inertia::render('leasing_statuses/Index',['statuses' => $statuses]);
     }
 
     /**
@@ -60,7 +60,7 @@ class PropertyController extends Controller
         //        return abort('401');
         // } 
 
-          return Inertia::render('properties/Create');
+          return Inertia::render('leasing_statuses/Create');
     }
 
     /**
@@ -78,15 +78,15 @@ class PropertyController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:properties',
-              'account_number' => 'required|unique:properties',
+              'name' => 'required|unique:leasing_statuses',
+              'account_number' => 'required|unique:leasing_statuses',
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        Property::create($data);
+        LeasingStatus::create($data);
 
-       return redirect('properties')->with('message', 'Property Created Successfully!');
+       return redirect('leasing-status')->with('message', 'Leasing Status Created Successfully!');
     }
 
     /**
@@ -101,9 +101,9 @@ class PropertyController extends Controller
                return abort('401');
           } 
 
-         $property = Property::find($id);
+         $status = LeasingStatus::find($id);
 
-         return Inertia::render('properties/Edit',compact('property'));
+         return Inertia::render('leasing_statuses/Edit',compact('status'));
     }
 
     /**
@@ -134,21 +134,21 @@ class PropertyController extends Controller
         $data = $request->except('_token');
 
          $request->validate([
-              'name' => 'required|unique:properties,name,'.$id,
-              'account_number' => 'required|unique:properties,account_number,'.$id,
+              'name' => 'required|unique:leasing_statuses,name,'.$id,
+              'account_number' => 'required|unique:leasing_statuses,account_number,'.$id,
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        $property = Property::find($id);
+        $status = LeasingStatus::find($id);
 
-         if(!$property){
+         if(!$status){
             return redirect()->back();
          }
           
-        $property->update($data);
+        $status->update($data);
           
-        return redirect('properties')->with('message', 'Property Updated Successfully!');
+        return redirect('leasing-status')->with('message', 'Leasing Status Updated Successfully!');
     }
 
     /**
@@ -162,8 +162,8 @@ class PropertyController extends Controller
          if(Gate::denies('delete')) {
                return abort('401');
           } 
-         Property::find($id)->delete();
+         LeasingStatus::find($id)->delete();
 
-        return redirect()->back()->with('message', 'Property Deleted Successfully!');
+        return redirect()->back()->with('message', 'Leasing Status Deleted Successfully!');
     }
 }

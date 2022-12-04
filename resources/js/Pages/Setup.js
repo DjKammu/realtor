@@ -21,6 +21,12 @@ function Setup() {
                     <InertiaLink href="/properties" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Properties
                     </InertiaLink>
+                    <InertiaLink href="/leasing-status" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Leasing Status
+                    </InertiaLink>
+                    <InertiaLink href="/showing-status" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Showing Status
+                    </InertiaLink>
                     </div>
                 </div>
 
