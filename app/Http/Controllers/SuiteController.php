@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Models\Suite;
 use Inertia\Inertia;
 use Gate;
 
 
-class PropertyController extends Controller
+class SuiteController extends Controller
 {
      /**
      * Create a new controller instance.
@@ -31,7 +32,7 @@ class PropertyController extends Controller
                return abort('401');
          }
 
-         $properties = Property::query();
+         $suites = Suite::query();
 
          $orderBy = 'name';  
          $order ='asc' ;
@@ -44,9 +45,9 @@ class PropertyController extends Controller
              : request()->order;
         }
         
-         $properties = $properties->orderBy($orderBy,$order)->paginate((new Property())->perPage); 
+         $suites = $suites->orderBy($orderBy,$order)->paginate((new Suite())->perPage); 
 
-         return Inertia::render('properties/Index',['properties' => $properties]);
+         return Inertia::render('suites/Index',['suites' => $suites]);
     }
 
     /**
@@ -55,12 +56,19 @@ class PropertyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    { 
-         if(Gate::denies('add')) {
+    {
+        if(Gate::denies('add')) {
                return abort('401');
-         } 
+        } 
+          $properties = Property::orderBy('name')->get();
 
-          return Inertia::render('properties/Create');
+          $properties = @$properties->filter(function($property){
+              $property->label = $property->name;
+              $property->value = $property->id;
+              return $property;
+          });
+
+          return Inertia::render('suites/Create',compact('properties'));
     }
 
     /**
@@ -78,15 +86,15 @@ class PropertyController extends Controller
         $data = $request->except('_token');
 
         $request->validate([
-              'name' => 'required|unique:properties',
-              'account_number' => 'required|unique:properties',
+              'name' => 'required|unique:suites',
+              'account_number' => 'required|unique:suites',
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        Property::create($data);
+        Suite::create($data);
 
-       return redirect('properties')->with('message', 'Property Created Successfully!');
+       return redirect('suites')->with('message', 'Suite Created Successfully!');
     }
 
     /**
@@ -101,9 +109,17 @@ class PropertyController extends Controller
                return abort('401');
           } 
 
-         $property = Property::find($id);
+         $suite = Suite::find($id);
 
-         return Inertia::render('properties/Edit',compact('property'));
+         $properties = Property::orderBy('name')->get();
+
+          $properties = @$properties->filter(function($property){
+              $property->label = $property->name;
+              $property->value = $property->id;
+              return $property;
+          });
+
+         return Inertia::render('suites/Edit',compact('suite','properties'));
     }
 
     /**
@@ -134,21 +150,21 @@ class PropertyController extends Controller
         $data = $request->except('_token');
 
          $request->validate([
-              'name' => 'required|unique:properties,name,'.$id,
-              'account_number' => 'required|unique:properties,account_number,'.$id,
+              'name' => 'required|unique:suites,name,'.$id,
+              'account_number' => 'required|unique:suites,account_number,'.$id,
         ]);
 
         $data['slug'] = \Str::slug($request->name);
 
-        $property = Property::find($id);
+        $suite = Suite::find($id);
 
-         if(!$property){
+         if(!$suite){
             return redirect()->back();
          }
           
-        $property->update($data);
+        $suite->update($data);
           
-        return redirect('properties')->with('message', 'Property Updated Successfully!');
+        return redirect('suites')->with('message', 'Suite Updated Successfully!');
     }
 
     /**
@@ -162,8 +178,8 @@ class PropertyController extends Controller
          if(Gate::denies('delete')) {
                return abort('401');
           } 
-         Property::find($id)->delete();
+         Suite::find($id)->delete();
 
-        return redirect()->back()->with('message', 'Property Deleted Successfully!');
+        return redirect()->back()->with('message', 'Suite Deleted Successfully!');
     }
 }

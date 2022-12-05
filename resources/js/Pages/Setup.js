@@ -18,6 +18,12 @@ function Setup() {
                     Roles
                     </InertiaLink>
 
+                    
+                    </div>
+                    <div className="p-6 bg-white border-b border-gray-200">
+                    <InertiaLink href="/suites" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                     Suites
+                    </InertiaLink>
                     <InertiaLink href="/properties" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Properties
                     </InertiaLink>
@@ -27,6 +33,7 @@ function Setup() {
                     <InertiaLink href="/showing-status" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Showing Status
                     </InertiaLink>
+
                     </div>
                 </div>
 

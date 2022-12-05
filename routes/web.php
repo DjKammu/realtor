@@ -35,6 +35,7 @@ Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware
 Route::resource('properties', App\Http\Controllers\PropertyController::class);
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
+Route::resource('suites', App\Http\Controllers\SuiteController::class);
 
 
 // Profile Routes 
