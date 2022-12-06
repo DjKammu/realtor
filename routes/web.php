@@ -26,12 +26,12 @@ Route::get('/', function () {
     // ]);
 });
 
-
 // Set Up Routes // 
 
 Route::inertia('/setup', 'Setup')->middleware('auth');
 
 Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
+Route::resource('users', App\Http\Controllers\UserController::class)->middleware('can:add_users');
 Route::resource('properties', App\Http\Controllers\PropertyController::class);
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);

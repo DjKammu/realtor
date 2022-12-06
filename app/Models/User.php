@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->roles()->where('slug', $roleSlug)->count() == 1;
     }
+
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class, 'property_users')->withTimestamps();
+    }
 }

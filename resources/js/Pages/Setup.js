@@ -17,6 +17,9 @@ function Setup() {
                     <InertiaLink href="/roles" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Roles
                     </InertiaLink>
+                    <InertiaLink href="/users" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Users
+                    </InertiaLink>
 
                     
                     </div>

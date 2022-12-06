@@ -12,5 +12,9 @@ class Property extends Model
       protected $fillable = [
         'name', 'slug', 'account_number'
     ];
-
+     
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'property_users')->withTimestamps();
+    }
 }
