@@ -7,6 +7,7 @@ use App\Models\Property;
 use App\Models\Suite;
 use Inertia\Inertia;
 use Gate;
+use Carbon\Carbon;
 
 
 class SuiteController extends Controller
@@ -181,5 +182,26 @@ class SuiteController extends Controller
          Suite::find($id)->delete();
 
         return redirect()->back()->with('message', 'Suite Deleted Successfully!');
+    }
+
+    public function getSuites(Request $request){
+
+        if(Gate::denies('edit')) {
+               return abort('401');
+        } 
+
+        $id = $request->id;
+        $suites = Suite::wherePropertyId($id)->get();
+
+        $suites = @$suites->filter(function($suite){
+              $suite->label = $suite->name;
+              $suite->value = $suite->id;
+              return $suite;
+          });
+
+        return \Response::json(
+         ['success' => 1,
+         'data'    => $suites]
+        );
     }
 }

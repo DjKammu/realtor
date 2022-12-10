@@ -36,7 +36,8 @@ Route::resource('properties', App\Http\Controllers\PropertyController::class);
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
 Route::resource('suites', App\Http\Controllers\SuiteController::class);
-
+Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
+Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 
 // Profile Routes 
 Route::group(['middleware' => 'auth'], function() {
