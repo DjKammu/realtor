@@ -6,6 +6,7 @@ use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
 use App\Models\Property;
 use App\Models\TenantProspect;
+use App\Models\Suite;
 use App\Models\User;
 use Inertia\Inertia;
 use Gate;
@@ -34,7 +35,7 @@ class TenantProspectController extends Controller
                return abort('401');
          }
 
-         $tenantProspect = TenantProspect::query();
+         $tenantProspects = TenantProspect::query();
 
          $orderBy = 'tenant_name';  
          $order ='asc' ;
@@ -46,10 +47,65 @@ class TenantProspectController extends Controller
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'asc' 
              : request()->order;
         }
-        
-         $tenantProspect = $tenantProspect->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
+         
+         $properties = Property::orderBy('name')->get();
+         $users      = User::whereNotIn('id',[1])->orderBy('name')->get();
+         $showingStatus = ShowingStatus::orderBy('name')->get();
+         $leasingStatus = LeasingStatus::orderBy('name')->get();
 
-         return Inertia::render('tenant_prospects/Index',['tenantProspect' => $tenantProspect]);
+          $properties = @$properties->filter(function($property){
+              $property->label = $property->name;
+              $property->value = $property->id;
+              return $property;
+          });
+          $users = @$users->filter(function($user){
+              $user->label = $user->name;
+              $user->value = $user->id;
+              return $user;
+          });
+          $showingStatus = @$showingStatus->filter(function($showingSt){
+              $showingSt->label = $showingSt->name;
+              $showingSt->value = $showingSt->id;
+              return $showingSt;
+          });
+
+          $leasingStatus = @$leasingStatus->filter(function($leasingSt){
+              $leasingSt->label = $leasingSt->name;
+              $leasingSt->value = $leasingSt->id;
+              return $leasingSt;
+          });
+
+         $dateArr = TenantProspect::$dateArr;
+         $date = request()->date;
+         $property = request()->property;
+         $suite = request()->suite;
+         $shown_by = request()->shown_by;
+         $leasing_agent = request()->leasing_agent;
+         $tenantProspects = $tenantProspects->when($property, function ($q) use 
+           ($property) {$q->where('property_id',$property);
+          })->when($suite, function ($q) use 
+           ($suite) {$q->where('suite_id',$suite);
+          })->when($shown_by, function ($q) use 
+           ($shown_by) {$q->where('shown_by_id',$shown_by);
+          })->when($leasing_agent, function ($q) use 
+           ($leasing_agent) {$q->where('leasing_agent_id',$leasing_agent);
+          })->when($date, function ($q) use 
+           ($date) {$q->where('date', '>', now()->subDays($date));
+          });
+
+
+          $tenantSuit = @Suite::find($suite);
+
+          if($tenantSuit){
+                $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
+                $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
+          }
+      
+
+         $tenantProspects = $tenantProspects->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
+
+         return Inertia::render('tenant_prospects/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','tenantProspects','properties',
+          'users','showingStatus','leasingStatus','tenantSuit'));
     }
 
     /**
