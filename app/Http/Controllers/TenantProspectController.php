@@ -41,7 +41,7 @@ class TenantProspectController extends Controller
          
          if(request()->filled('orderby')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-                ['tenant_use','tenant_name'] ) ? 'tenant_name' : request()->orderby ) : 'tenant_name';
+                ['tenant_use','tenant_name','date','showing_date'] ) ? 'tenant_name' : request()->orderby ) : 'tenant_name';
             
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'asc' 
              : request()->order;

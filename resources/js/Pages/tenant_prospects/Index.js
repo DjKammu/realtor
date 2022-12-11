@@ -45,10 +45,22 @@ const Index = (props) => {
                                             <tr className="bg-gray-100">
                                                 <th className="px-4 py-2 w-20">No.</th>
                                                 <th className="px-4 py-2">Date
+                                                 <i onClick={sortOrderBy('date', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('date', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
                                                 </th>
                                                 <th className="px-4 py-2">Showing Date
+                                                 <i onClick={sortOrderBy('showing_date', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('showing_date', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Name</th>
+                                                <th className="px-4 py-2">Name
+                                                 <i onClick={sortOrderBy('tenant_name', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('tenant_name', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
 
