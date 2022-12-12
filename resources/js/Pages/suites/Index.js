@@ -46,9 +46,19 @@ const Index = (props) => {
                                         <thead>
                                             <tr className="bg-gray-100">
                                                 <th className="px-4 py-2 w-20">No.</th>
-                                                <th className="px-4 py-2">Name
+                                                <th className="px-4 py-2">Name<i onClick={sortOrderBy('name', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('name', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Account Number</th>
+                                                <th className="px-4 py-2">Account Number<i onClick={sortOrderBy('account_number', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('account_number', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">Property<i onClick={sortOrderBy('property_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('property_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
 
@@ -61,6 +71,7 @@ const Index = (props) => {
                                                     <td className="border px-4 py-2">{ suite.name }</td>
                                                     <td className="border px-4 py-2">{ suite.account_number }
                                                     </td>
+                                                    <td className="border px-4 py-2">{ suite.property }</td>
                                                     <td className="border px-4 py-2">        
                                                         <InertiaLink href={`/suites/${suite.id}`} >
                                                         <i className="fa fa-edit text-success"></i>

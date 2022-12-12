@@ -33,20 +33,29 @@ class SuiteController extends Controller
                return abort('401');
          }
 
-         $suites = Suite::query();
+         $suites = Suite::select('*');
 
          $orderBy = 'name';  
          $order ='asc' ;
          
          if(request()->filled('orderby')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-                ['account_number','name'] ) ? 'name' : request()->orderby ) : 'name';
+                ['account_number','name' ,'property_id'] ) ? 'name' : request()->orderby ) : 'name';
             
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'asc' 
              : request()->order;
+
+             if($orderBy == 'property_id' ){
+                    $suites->rightjoin('properties', 'properties.id', '=', 'suites.property_id');
+                    $orderBy = 'properties.name';
+             }
         }
-        
-         $suites = $suites->orderBy($orderBy,$order)->paginate((new Suite())->perPage); 
+
+         $suites = $suites->addSelect(['property' => Property::select('name')
+            ->whereColumn('properties.id', 'suites.property_id')
+            ->take(1)
+        ])->orderBy($orderBy,$order)->paginate((new Suite())->perPage); 
+      
 
          return Inertia::render('suites/Index',['suites' => $suites]);
     }
