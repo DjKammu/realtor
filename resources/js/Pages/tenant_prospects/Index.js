@@ -71,7 +71,7 @@ const Index = (props) => {
               suite_id   : (property == selectedOption.value)  ? suite : null
           }));
           setSuites([]);
-           setSelectedSuiteOption((property == selectedOption.value)  ? tenantSuit : []);
+          setSelectedSuiteOption((property == selectedOption.value)  ? tenantSuit : []);
 
          axios({
             url: '/get-suites/?id='+selectedOption.value,
@@ -142,6 +142,7 @@ const Index = (props) => {
                             <InertiaLink href="/tenant-prospects/create" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                             Create Tenant Prospect
                             </InertiaLink>
+
                             </div>
                              <div className="flex items-center">
                                        <Select 
@@ -175,10 +176,16 @@ const Index = (props) => {
                                         onChange={handleSelectLeasingAgentChange}
                                         options={users}
                                         />  
-                                <div className="flex border border-purple-200 rounded">
+                                   <div className="flex border border-purple-200 rounded">
                                     
                                     <button onClick={handleSubmit} className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
                                         Search
+                                    </button>
+                                    <a href="/download/tenant-prospects"  className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
+                                        Download
+                                    </a>
+                                    <button onClick={handleSubmit} className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
+                                        Email
                                     </button>
                                 </div>
                             </div>

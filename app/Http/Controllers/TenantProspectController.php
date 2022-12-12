@@ -1,16 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\TenantProspect;
 use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
+use Illuminate\Http\Request;
 use App\Models\Property;
-use App\Models\TenantProspect;
 use App\Models\Suite;
 use App\Models\User;
 use Inertia\Inertia;
-use Gate;
 use Carbon\Carbon;
+use Gate;
+use PDF;
 
 class TenantProspectController extends Controller
 {
@@ -214,9 +215,11 @@ class TenantProspectController extends Controller
           });
 
           $tenantSuit = @$tenantProspect->suite;
-          $tenantSuit->label = @$tenantSuit->name;
-          $tenantSuit->value = @$tenantSuit->id;
-        
+
+          if($tenantSuit){
+                $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
+                $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
+          }
 
          return Inertia::render('tenant_prospects/Edit',compact('tenantSuit','tenantProspect','properties','users',
             'showingStatus','leasingStatus'));
@@ -278,4 +281,23 @@ class TenantProspectController extends Controller
 
         return redirect()->back()->with('message', 'Tenant Prospect Deleted Successfully!');
     }
+
+    public function downloadPDF($id,$view = false){
+
+        $tenant_prospects = TenantProspect::all();
+
+        $pdf = PDF::loadView('tenant_prospects.pdf',
+          ['tenant_prospects' => $tenant_prospects]
+        );
+         
+       // $view = true; 
+        if($view){
+         return $pdf->stream('tenant_prospects.pdf');
+         return $pdf->setPaper('a4')->output();
+        }
+
+        return $pdf->download('tenant_prospects.pdf');
+
+    }
+
 }

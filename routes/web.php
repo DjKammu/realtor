@@ -39,6 +39,10 @@ Route::resource('suites', App\Http\Controllers\SuiteController::class);
 Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
 Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 
+ Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,
+    'downloadPDF'])->name('download.tenant-prospects');
+
+
 // Profile Routes 
 Route::group(['middleware' => 'auth'], function() {
     Route::inertia('/home', 'Home');

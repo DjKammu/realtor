@@ -21,6 +21,10 @@ class TenantProspect extends Model
     	return $this->belongsTo(Suite::class);
     }
 
+    public function property(){
+      return $this->belongsTo(Property::class);
+    }
+
     public static $dateArr = [
       ['label' => '1 Week' , 'value' => 7],
       ['label' => '2 Week' , 'value' => 14],
