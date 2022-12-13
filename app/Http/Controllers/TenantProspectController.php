@@ -49,8 +49,13 @@ class TenantProspectController extends Controller
              : request()->order;
 
              if($orderBy == 'property_id' ){
-                    $tenantProspects->rightjoin('properties', 'properties.id', '=', 'tenant_prospects.property_id');
-                    $orderBy = 'properties.name';
+
+                    // $tenantProspects->rightjoin('properties', 'properties.id', '=', 'tenant_prospects.property_id');
+                    // $orderBy = 'properties.name';
+
+                    $orderBy = Property::select('name')
+                          ->whereColumn('properties.id', 'tenant_prospects.property_id');
+
              }elseif($orderBy == 'suite_id' ){
                     $tenantProspects->rightjoin('suites', 'suites.id', '=', 'tenant_prospects.suite_id');
                     $orderBy = 'suites.name';
