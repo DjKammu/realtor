@@ -324,7 +324,7 @@ class TenantProspectController extends Controller
           ['tenant_prospects' => $tenant_prospects]
         );
          
-       // $view = true; 
+        $view = true; 
         if($view){
          return $pdf->stream('tenant_prospects.pdf');
          return $pdf->setPaper('a4')->output();

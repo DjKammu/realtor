@@ -5,10 +5,14 @@
             <thead>
             <tr class="text-danger">
                  <th >Date </th>
-                 <th >Showing Date</th>
+                 <th >SD</th>
                  <th >Property</th>
-                 <th >Name </th>
-                 <th >Tenant Use</th>
+                 <th >Suite</th>
+                 <th >TN</th>
+                 <th >TU</th>
+                 <th >SB</th>
+                 <th >LA</th>
+                 <th >Notes</th>
 
             </tr>
             </thead>
@@ -18,9 +22,13 @@
              <tr>
                <td> {{ @$prospect->date }}</td>
                <td> {{ @$prospect->showing_date }}</td>
+               <td> {{ @$prospect->suite->name }}</td>
                <td> {{ @$prospect->property->name }}</td>
                <td> {{ @$prospect->tenant_name }}</td>
                <td> {{ @$prospect->tenant_use }}</td>
+               <td> {{ @$prospect->shown_by->name }}</td>
+               <td> {{ @$prospect->leasing_agent->name }}</td>
+               <td> {{ @$prospect->notes }}</td>
           
              </tr> 
              @endforeach

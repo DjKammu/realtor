@@ -73,10 +73,10 @@ const Index = (props) => {
          setForm(form => ({
               ...form,
               property: selectedOption.value,
-              suite_id   : (property == selectedOption.value)  ? suite : null
+              suite_id   : null
           }));
 
-          setSelectedSuiteOption((property == selectedOption.value)  ? tenantSuit : []);
+          setSelectedSuiteOption([]);
           setSuites([]);
         
          axios({

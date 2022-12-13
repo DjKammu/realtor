@@ -36,6 +36,9 @@ function Setup() {
                     <InertiaLink href="/showing-status" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Showing Status
                     </InertiaLink>
+                     <InertiaLink href="/document-types" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Document Types
+                    </InertiaLink>
 
                     </div>
                 </div>
