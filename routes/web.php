@@ -35,7 +35,7 @@ Route::resource('users', App\Http\Controllers\UserController::class)->middleware
 Route::resource('properties', App\Http\Controllers\PropertyController::class);
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
-Route::resource('suites', App\Http\Conetrollers\SuiteController::class);
+Route::resource('suites', App\Http\Controllers\SuiteController::class);
 Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
 Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
