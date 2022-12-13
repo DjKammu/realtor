@@ -61,7 +61,6 @@ const Index = (props) => {
                                                 className="fa fa-sort-desc"></i></th>
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>

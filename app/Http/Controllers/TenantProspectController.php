@@ -43,10 +43,25 @@ class TenantProspectController extends Controller
          
          if(request()->filled('orderby')){
             $orderBy = request()->filled('orderby') ? ( !in_array(request()->orderby, 
-                ['tenant_use','tenant_name','date','showing_date'] ) ? 'tenant_name' : request()->orderby ) : 'tenant_name';
+                ['tenant_use','tenant_name','date','showing_date','property_id','suite_id','shown_by_id','leasing_agent_id'] ) ? 'tenant_name' : request()->orderby ) : 'tenant_name';
             
             $order = !in_array(\Str::lower(request()->order), ['desc','asc'])  ? 'asc' 
              : request()->order;
+
+             if($orderBy == 'property_id' ){
+                    $tenantProspects->rightjoin('properties', 'properties.id', '=', 'tenant_prospects.property_id');
+                    $orderBy = 'properties.name';
+             }elseif($orderBy == 'suite_id' ){
+                    $tenantProspects->rightjoin('suites', 'suites.id', '=', 'tenant_prospects.suite_id');
+                    $orderBy = 'suites.name';
+             }elseif($orderBy == 'shown_by_id' ){
+                    $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.shown_by_id');
+                    $orderBy = 'users.name';
+             }elseif($orderBy == 'leasing_agent_id' ){
+                    $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.leasing_agent_id');
+                    $orderBy = 'users.name';
+             }
+
         }
          
          $properties = Property::orderBy('name')->get();
@@ -93,7 +108,7 @@ class TenantProspectController extends Controller
           })->when($date, function ($q) use 
            ($date) {$q->where('date', '>', now()->subDays($date));
           });
-
+     
 
           $tenantSuit = @Suite::find($suite);
 
@@ -101,12 +116,31 @@ class TenantProspectController extends Controller
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
+          
+          $suitesArr = Suite::where('property_id',$property)->orderBy('name')->get();
+         
+           $suitesArr = @$suitesArr->filter(function($suite){
+              $suite->label = $suite->name;
+              $suite->value = $suite->id;
+              return $suite;
+          });
+
+         $tenantProspects = $tenantProspects->addSelect(['property' => Property::select('name')
+            ->whereColumn('properties.id', 'tenant_prospects.property_id')
+            ->take(1),
+            'suite' => Suite::select('name')
+            ->whereColumn('suites.id', 'tenant_prospects.suite_id')
+            ->take(1),
+            'shown_by' => User::select('name')
+            ->whereColumn('users.id', 'tenant_prospects.shown_by_id')
+            ->take(1),
+            'leasing_agent' => User::select('name')
+            ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id')
+            ->take(1)
+        ])->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
       
-
-         $tenantProspects = $tenantProspects->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
-
          return Inertia::render('tenant_prospects/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','tenantProspects','properties',
-          'users','showingStatus','leasingStatus','tenantSuit'));
+          'users','showingStatus','leasingStatus','tenantSuit','suitesArr'));
     }
 
     /**

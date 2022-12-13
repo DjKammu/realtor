@@ -8,7 +8,12 @@ import Select from 'react-select';
 
 const Index = (props) => {
       
-      const { tenantSuit, date, property, suite, shown_by, leasing_agent, tenantProspects, properties, users, showingStatus, leasingStatus, dateArr } = usePage().props  
+      let { suitesArr , tenantSuit, date, property, suite, shown_by, leasing_agent, tenantProspects, properties, users, showingStatus, leasingStatus, dateArr } = usePage().props  
+      
+      let propertyNullArr = [{'label' : 'Select Property' , 'value' : null}];
+      let shownByNullArr = [{'label' : 'Select Shown By' , 'value' : null}];
+      let leasingAgentNullArr = [{'label' : 'Select Leasing Agent' , 'value' : null}];
+      let suitNullArr = [{'label' : 'Select Suite' , 'value' : null}];
 
       const selectedOption  =  properties.filter(item =>
                item.value == property); 
@@ -23,7 +28,7 @@ const Index = (props) => {
                item.value == leasing_agent); 
 
 
-      const [suites, setSuites] = useState([]);
+      const [suites, setSuites] = useState((suitesArr.length > 0) ? [...suitNullArr, ...suitesArr] : []);
 
       const [form, setForm] = useState({
               date: date,
@@ -70,9 +75,10 @@ const Index = (props) => {
               property: selectedOption.value,
               suite_id   : (property == selectedOption.value)  ? suite : null
           }));
-          setSuites([]);
-          setSelectedSuiteOption((property == selectedOption.value)  ? tenantSuit : []);
 
+          setSelectedSuiteOption((property == selectedOption.value)  ? tenantSuit : []);
+          setSuites([]);
+        
          axios({
             url: '/get-suites/?id='+selectedOption.value,
             headers: {
@@ -83,7 +89,7 @@ const Index = (props) => {
             // ? returns undefined if variable is undefined
             // if( response.data?.errors?.length ) this.setState({errors: response.data.errors})
               
-            if(response.data.data.length) { setSuites(response.data.data) }
+            if(response.data.data.length) { setSuites([...suitNullArr,...response.data.data]) }
           })
           .catch(response => {
             console.log(response)
@@ -128,8 +134,11 @@ const Index = (props) => {
           ...form,
           date: option.value
       }));
+
   }
-     
+
+ 
+      
     return (
         <div>
             <Layout>
@@ -155,11 +164,11 @@ const Index = (props) => {
                                             placeholder="Select Property"
                                             defaultValue={selectedOption}
                                             onChange={handleSelectChange}
-                                            options={properties}
+                                            options={ (properties.length > 0) ? [...propertyNullArr, ...properties] : []}
                                         /> 
                                         <Select
                                         placeholder="Select Suite"
-                                        defaultValue={selectedSuiteOption}
+                                        value={selectedSuiteOption}
                                         onChange={handleSelectSuitChange}
                                         options={suites}
                                         />  
@@ -167,14 +176,14 @@ const Index = (props) => {
                                         placeholder="Select Shown By"
                                         defaultValue={selectedShownByOption}
                                         onChange={handleSelectShownByChange}
-                                        options={users}
+                                        options={(users.length > 0) ? [...shownByNullArr, ...users] : []}
                                         />  
 
                                         <Select
                                         placeholder="Select Leasing Agent"
                                         defaultValue={selectedLeasingAgentOption}
                                         onChange={handleSelectLeasingAgentChange}
-                                        options={users}
+                                        options={(users.length > 0) ? [...leasingAgentNullArr, ...users] : []}
                                         />  
                                    <div className="flex border border-purple-200 rounded">
                                     
@@ -196,24 +205,51 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 w-20">No.</th>
                                                 <th className="px-4 py-2">Date
                                                  <i onClick={sortOrderBy('date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('date', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Showing Date
+                                                <th className="px-4 py-2">SD
                                                  <i onClick={sortOrderBy('showing_date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('showing_date', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Name
+                                                <th className="px-4 py-2">Property
+                                                 <i onClick={sortOrderBy('property_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('property_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
+                                                </th>
+                                                <th className="px-4 py-2">Suite
+                                                 <i onClick={sortOrderBy('suite_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('suite_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
+                                                </th>
+                                                <th className="px-4 py-2">TN
                                                  <i onClick={sortOrderBy('tenant_name', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('tenant_name', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">TU                                                 <i onClick={sortOrderBy('tenant_use', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('tenant_use', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">SB
+                                                 <i onClick={sortOrderBy('shown_by_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('shown_by_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">LA
+                                                 <i onClick={sortOrderBy('leasing_agent_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('leasing_agent_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">Notes</th>
+                                              
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
 
@@ -222,10 +258,15 @@ const Index = (props) => {
                                         <tbody>
                                             {tenantProspects.data.map((tenantPro,key) => (
                                                 <tr key={key}>
-                                                    <td className="border px-4 py-2">{ tenantPro.id }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.date }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.showing_date }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.property }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.suite }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.tenant_name }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.tenant_use }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.shown_by }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.leasing_agent }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.notes }</td>
                                                     <td className="border px-4 py-2">        
                                                         <InertiaLink href={`/tenant-prospects/${tenantPro.id}`} >
                                                         <i className="fa fa-edit text-success"></i>

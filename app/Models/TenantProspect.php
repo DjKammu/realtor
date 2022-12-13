@@ -26,6 +26,7 @@ class TenantProspect extends Model
     }
 
     public static $dateArr = [
+      ['label' => 'Select Date' , 'value' => null],
       ['label' => '1 Week' , 'value' => 7],
       ['label' => '2 Week' , 'value' => 14],
       ['label' => '3 Week' , 'value' => 21],
