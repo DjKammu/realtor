@@ -57,14 +57,24 @@ class TenantProspectController extends Controller
                           ->whereColumn('properties.id', 'tenant_prospects.property_id');
 
              }elseif($orderBy == 'suite_id' ){
-                    $tenantProspects->rightjoin('suites', 'suites.id', '=', 'tenant_prospects.suite_id');
-                    $orderBy = 'suites.name';
+                    // $tenantProspects->rightjoin('suites', 'suites.id', '=', 'tenant_prospects.suite_id');
+                    // $orderBy = 'suites.name';
+
+                    $orderBy = Suite::select('name')
+                          ->whereColumn('suites.id', 'tenant_prospects.suite_id');
+
              }elseif($orderBy == 'shown_by_id' ){
-                    $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.shown_by_id');
-                    $orderBy = 'users.name';
+                    // $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.shown_by_id');
+                    // $orderBy = 'users.name';
+                    $orderBy = User::select('name')
+                          ->whereColumn('users.id', 'tenant_prospects.shown_by_id');
+
              }elseif($orderBy == 'leasing_agent_id' ){
-                    $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.leasing_agent_id');
-                    $orderBy = 'users.name';
+                    // $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.leasing_agent_id');
+                    // $orderBy = 'users.name';
+
+                    $orderBy = User::select('name')
+                          ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id');
              }
 
         }
@@ -329,14 +339,12 @@ class TenantProspectController extends Controller
           ['tenant_prospects' => $tenant_prospects]
         );
          
-        $view = true; 
+       // $view = true; 
         if($view){
-         return $pdf->stream('tenant_prospects.pdf');
+        // return $pdf->stream('tenant_prospects.pdf');
          return $pdf->setPaper('a4')->output();
         }
-
         return $pdf->download('tenant_prospects.pdf');
-
     }
 
 }

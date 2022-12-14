@@ -45,16 +45,12 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 w-20">No.</th>
                                                 <th className="px-4 py-2">Name<i onClick={sortOrderBy('name', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('name', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Account Number<i onClick={sortOrderBy('account_number', 'asc')} 
-                                                className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('account_number', 'desc')}  
-                                                className="fa fa-sort-desc"></i></th>
+                                                
                                                 <th className="px-4 py-2">Property<i onClick={sortOrderBy('property_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('property_id', 'desc')}  

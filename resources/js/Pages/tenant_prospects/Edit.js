@@ -39,7 +39,8 @@ const Edit = (props) => {
       leasing_agent_id:    tenantProspect.leasing_agent_id,
       shown_by_id:    tenantProspect.shown_by_id,
       tenant_name:    tenantProspect.tenant_name,
-      tenant_use:    tenantProspect.tenant_use
+      tenant_use:    tenantProspect.tenant_use,
+      notes:    tenantProspect.notes
     })
 
     const handleSubmit = e => {
@@ -56,7 +57,8 @@ const Edit = (props) => {
           shown_by_id: form.shown_by_id,
           leasing_agent_id: form.leasing_agent_id,
           tenant_name: form.tenant_name,
-          tenant_use: form.tenant_use
+          tenant_use: form.tenant_use,
+          notes: form.notes
       })
 
     }
@@ -281,7 +283,7 @@ const Edit = (props) => {
                        {/* leasing_agent_id */}
                     <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="leasing_agent_id">
-                        <span>Leasing Agent </span>
+                        <span>QPM Leasing Agent </span>
                       </label>
                       <Select
                         defaultValue={selectedLeasingAgentOption}
@@ -295,7 +297,7 @@ const Edit = (props) => {
                       <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
                         <span>Notes</span>
                       </label>
-                      <textarea id="account_number" placeholder="Notes"
+                      <textarea id="notes" placeholder="Notes"
                                 value={form.notes}
                                 onChange={handleChange} 
                                 className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"

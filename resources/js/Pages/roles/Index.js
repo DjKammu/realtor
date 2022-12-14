@@ -43,7 +43,6 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 w-20">No.</th>
                                                 <th className="px-4 py-2">Name </th>
                                                 <th className="px-4 py-2">Permission</th>
                                                 <th className="px-4 py-2">Edit</th>
@@ -54,7 +53,6 @@ const Index = (props) => {
                                         <tbody>
                                             {roles.data.map((role,key) => (
                                                 <tr key={key}>
-                                                    <td className="border px-4 py-2">{ role.id }</td>
                                                     <td className="border px-4 py-2">{ role.name }</td>
                                                     <td className="border px-4 py-2">{ role.permissions }
                                                     </td>

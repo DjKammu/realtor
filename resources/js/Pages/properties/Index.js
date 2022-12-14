@@ -45,7 +45,6 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2 w-20">No.</th>
                                                 <th className="px-4 py-2">Name
                                                 <i onClick={sortOrderBy('name', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
@@ -53,7 +52,6 @@ const Index = (props) => {
                                                 className="fa fa-sort-desc"></i>
                                   
                                                 </th>
-                                                <th className="px-4 py-2">Account Number</th>
                                                 <th className="px-4 py-2">Edit</th>
                                                 <th className="px-4 py-2">Delete</th>
 
@@ -62,10 +60,8 @@ const Index = (props) => {
                                         <tbody>
                                             {properties.data.map((property,key) => (
                                                 <tr key={key}>
-                                                    <td className="border px-4 py-2">{ property.id }</td>
                                                     <td className="border px-4 py-2">{ property.name }</td>
-                                                    <td className="border px-4 py-2">{ property.account_number }
-                                                    </td>
+                                                    
                                                     <td className="border px-4 py-2">        
                                                         <InertiaLink href={`/properties/${property.id}`} >
                                                         <i className="fa fa-edit text-success"></i>
