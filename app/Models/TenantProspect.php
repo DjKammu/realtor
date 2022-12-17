@@ -13,7 +13,7 @@ class TenantProspect extends Model
         'date', 'showing_date', 'property_id', 'suite_id',
         'tenant_name', 'tenant_use', 'showing_status_id', 
         'leasing_status_id','shown_by_id', 
-        'leasing_agent_id', 'notes'
+        'leasing_agent_id', 'notes','realtor_id'
     ];
 
 

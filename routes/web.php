@@ -39,6 +39,9 @@ Route::resource('suites', App\Http\Controllers\SuiteController::class);
 Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
 Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
+Route::resource('tenant-uses', App\Http\Controllers\TenantUseController::class);
+Route::resource('tenants', App\Http\Controllers\TenantController::class);
+Route::resource('realtors', App\Http\Controllers\RealtorController::class);
 
 
  Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,

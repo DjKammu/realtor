@@ -75,7 +75,7 @@ const Edit = (props) => {
                <div className="md:grid md:grid-cols-4 md:gap-6">     
                             
                <div className="md:col-span-1">
-                <InertiaLink href="/suites" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                <InertiaLink href="/users" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                   Back to Users
                   </InertiaLink>
               </div>
@@ -164,6 +164,7 @@ const Edit = (props) => {
                         onChange={handleSelectPropertyChange}
                         options={properties}
                         isMulti
+                        closeMenuOnSelect={false}
                       />                   
                       </div>
 

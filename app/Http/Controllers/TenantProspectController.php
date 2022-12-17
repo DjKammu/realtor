@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\TenantProspect;
 use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
+use App\Models\TenantUse;
 use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Models\Realtor;
+use App\Models\Tenant;
 use App\Models\Suite;
 use App\Models\User;
 use Inertia\Inertia;
@@ -49,32 +52,33 @@ class TenantProspectController extends Controller
              : request()->order;
 
              if($orderBy == 'property_id' ){
-
-                    // $tenantProspects->rightjoin('properties', 'properties.id', '=', 'tenant_prospects.property_id');
-                    // $orderBy = 'properties.name';
-
                     $orderBy = Property::select('name')
                           ->whereColumn('properties.id', 'tenant_prospects.property_id');
 
-             }elseif($orderBy == 'suite_id' ){
-                    // $tenantProspects->rightjoin('suites', 'suites.id', '=', 'tenant_prospects.suite_id');
-                    // $orderBy = 'suites.name';
+             }elseif($orderBy == 'tenant_name' ){
 
+                    $orderBy = Tenant::select('name')
+                   ->whereColumn('tenants.id', 'tenant_prospects.tenant_name');
+
+             }elseif($orderBy == 'tenant_use' ){
+
+                    $orderBy = TenantUse::select('name')
+                   ->whereColumn('tenant_uses.id', 'tenant_prospects.tenant_use');
+
+             }elseif($orderBy == 'suite_id' ){
                     $orderBy = Suite::select('name')
                           ->whereColumn('suites.id', 'tenant_prospects.suite_id');
 
              }elseif($orderBy == 'shown_by_id' ){
-                    // $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.shown_by_id');
-                    // $orderBy = 'users.name';
                     $orderBy = User::select('name')
                           ->whereColumn('users.id', 'tenant_prospects.shown_by_id');
 
              }elseif($orderBy == 'leasing_agent_id' ){
-                    // $tenantProspects->rightjoin('users', 'users.id', '=', 'tenant_prospects.leasing_agent_id');
-                    // $orderBy = 'users.name';
-
                     $orderBy = User::select('name')
                           ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id');
+             }elseif($orderBy == 'realtor_id' ){
+                    $orderBy = Realtor::select('name')
+                             ->whereColumn('realtors.id', 'tenant_prospects.realtor_id');
              }
 
         }
@@ -84,7 +88,7 @@ class TenantProspectController extends Controller
          $showingStatus = ShowingStatus::orderBy('name')->get();
          $leasingStatus = LeasingStatus::orderBy('name')->get();
 
-          $properties = @$properties->filter(function($property){
+         $properties = @$properties->filter(function($property){
               $property->label = $property->name;
               $property->value = $property->id;
               return $property;
@@ -151,6 +155,15 @@ class TenantProspectController extends Controller
             ->take(1),
             'leasing_agent' => User::select('name')
             ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id')
+            ->take(1),
+            'realtor' => Realtor::select('name')
+            ->whereColumn('realtors.id', 'tenant_prospects.realtor_id')
+            ->take(1),
+            'tenant_name' => Tenant::select('name')
+            ->whereColumn('tenants.id', 'tenant_prospects.tenant_name')
+            ->take(1),
+            'tenant_use' => TenantUse::select('name')
+            ->whereColumn('tenant_uses.id', 'tenant_prospects.tenant_use')
             ->take(1)
         ])->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
       
@@ -172,6 +185,9 @@ class TenantProspectController extends Controller
           $users      = User::whereNotIn('id',[1])->orderBy('name')->get();
           $showingStatus = ShowingStatus::orderBy('name')->get();
           $leasingStatus = LeasingStatus::orderBy('name')->get();
+          $tenantUses = TenantUse::orderBy('name')->get();
+          $realtors = Realtor::orderBy('name')->get();
+          $tenants = Tenant::orderBy('name')->get();
 
           $properties = @$properties->filter(function($property){
               $property->label = $property->name;
@@ -195,8 +211,25 @@ class TenantProspectController extends Controller
               return $leasingSt;
           });
 
-          return Inertia::render('tenant_prospects/Create',compact('properties','users',
-            'showingStatus','leasingStatus'));
+          $tenantUses = @$tenantUses->filter(function($tenantU){
+              $tenantU->label = $tenantU->name;
+              $tenantU->value = $tenantU->id;
+              return $tenantU;
+          });
+          $realtors = @$realtors->filter(function($realtor){
+              $realtor->label = $realtor->name;
+              $realtor->value = $realtor->id;
+              return $realtor;
+          });
+          $tenants = @$tenants->filter(function($tenant){
+              $tenant->label = $tenant->name;
+              $tenant->value = $tenant->id;
+              return $tenant;
+          });
+
+
+          return Inertia::render('tenant_prospects/Create',compact('tenantUses','properties','users',
+            'showingStatus','leasingStatus','realtors','tenantUses','tenants'));
     }
 
     /**
@@ -237,9 +270,12 @@ class TenantProspectController extends Controller
 
          $properties = Property::orderBy('name')->get();
 
-         $users      = User::whereNotIn('id',[1])->orderBy('name')->get();
+          $users      = User::whereNotIn('id',[1])->orderBy('name')->get();
           $showingStatus = ShowingStatus::orderBy('name')->get();
           $leasingStatus = LeasingStatus::orderBy('name')->get();
+          $tenantUses = TenantUse::orderBy('name')->get();
+          $realtors = Realtor::orderBy('name')->get();
+          $tenants = Tenant::orderBy('name')->get();
 
           $properties = @$properties->filter(function($property){
               $property->label = $property->name;
@@ -263,6 +299,23 @@ class TenantProspectController extends Controller
               return $leasingSt;
           });
 
+          $tenantUses = @$tenantUses->filter(function($tenantU){
+              $tenantU->label = $tenantU->name;
+              $tenantU->value = $tenantU->id;
+              return $tenantU;
+          });
+          $realtors = @$realtors->filter(function($realtor){
+              $realtor->label = $realtor->name;
+              $realtor->value = $realtor->id;
+              return $realtor;
+          });
+          $tenants = @$tenants->filter(function($tenant){
+              $tenant->label = $tenant->name;
+              $tenant->value = $tenant->id;
+              return $tenant;
+          });
+
+
           $tenantSuit = @$tenantProspect->suite;
 
           if($tenantSuit){
@@ -270,8 +323,7 @@ class TenantProspectController extends Controller
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
 
-         return Inertia::render('tenant_prospects/Edit',compact('tenantSuit','tenantProspect','properties','users',
-            'showingStatus','leasingStatus'));
+         return Inertia::render('tenant_prospects/Edit',compact('realtors','tenantSuit','tenantProspect','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
     }
 
     /**

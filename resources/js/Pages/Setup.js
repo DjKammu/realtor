@@ -39,6 +39,15 @@ function Setup() {
                      <InertiaLink href="/document-types" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
                     Document Types
                     </InertiaLink>
+                     <InertiaLink href="/tenant-uses" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Tenant Uses
+                    </InertiaLink> 
+                    <InertiaLink href="/tenants" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Tenants
+                    </InertiaLink> 
+                    <InertiaLink href="/realtors" className="mr-1 p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                    Realtors
+                    </InertiaLink>
 
                     </div>
                 </div>

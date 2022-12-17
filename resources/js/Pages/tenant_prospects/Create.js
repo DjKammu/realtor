@@ -14,6 +14,9 @@ const Create = (props) => {
   const selectedShowingOption = null;
   const selectedShownByOption = null;
   const selectedLeasingAgentOption = null;
+  const selectedTenantNameOption  =  null; 
+  const selectedTenantUseOption  =  null; 
+  const selectedRealtorOption  =  null; 
 
   const [startDate, setStartDate] = useState(new Date());
   const [showingDate, setShowingDate] = useState(new Date());
@@ -29,6 +32,7 @@ const Create = (props) => {
       leasing_status_id: "",
       leasing_agent_id: "",
       shown_by_id: "",
+      realtor_id: "",
       tenant_name: "",
       tenant_use: "",
       notes: ""
@@ -45,6 +49,7 @@ const Create = (props) => {
           leasing_status_id: form.leasing_status_id,
           shown_by_id: form.shown_by_id,
           leasing_agent_id: form.leasing_agent_id,
+          realtor_id: form.realtor_id,
           tenant_name: form.tenant_name,
           tenant_use: form.tenant_use,
           notes: form.notes
@@ -141,9 +146,30 @@ const Create = (props) => {
       }));
   }
 
+    const handleSelectTenantNameChange = (option) => {
+     setForm(form => ({
+          ...form,
+          tenant_name: option.value
+      }));
+  }
+
+ const handleSelectTenantUseChange = (option) => {
+     setForm(form => ({
+          ...form,
+          tenant_use: option.value
+      }));
+  }
+
+ const handleSelectRealtorChange = (option) => {
+     setForm(form => ({
+          ...form,
+          realtor_id: option.value
+      }));
+  }
+
   const errors = usePage().props.errors;
 
-  const { properties, users, showingStatus, leasingStatus } = usePage().props;
+  const {realtors, tenantUses, tenants, properties, users, showingStatus, leasingStatus } = usePage().props;
    
     return (
         <div>
@@ -207,18 +233,19 @@ const Create = (props) => {
                       />                   
                       </div>
 
-                    {/* tenant_name */}
+                     {/* tenant_name */}
                     <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="tenant_name">
                         <span>Name</span>
                       </label>
+                       
+                       <Select
+                        defaultValue={selectedTenantNameOption}
+                        onChange={handleSelectTenantNameChange}
+                        options={tenants}
+                      />  
 
-                      <input type="text" id="tenant_name" placeholder="Name"
-                                value={form.tenant_name}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
-                                {errors.tenant_name && <div className="text-sm text-red-500">{errors.tenant_name}</div>}
-
+                   
                     </div>
 
                   {/* tenant_use */}
@@ -227,11 +254,25 @@ const Create = (props) => {
                         <span>Tenant Use</span>
                       </label>
 
-                      <input type="text" id="tenant_use" placeholder="Tenant Use"
-                                value={form.tenant_use}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
-                                {errors.tenant_use && <div className="text-sm text-red-500">{errors.tenant_use}</div>}
+                     <Select
+                        defaultValue={selectedTenantUseOption}
+                        onChange={handleSelectTenantUseChange}
+                        options={tenantUses}
+                      />  
+
+                    </div> 
+
+                    {/* realtor_id */}
+                    <div className="col-span-12 sm:col-span-12">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="realtor_id">
+                        <span>Realtor</span>
+                      </label>
+
+                     <Select
+                        defaultValue={selectedRealtorOption}
+                        onChange={handleSelectRealtorChange}
+                        options={realtors}
+                      />  
 
                     </div> 
                     

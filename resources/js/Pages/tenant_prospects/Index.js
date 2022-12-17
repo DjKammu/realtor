@@ -248,6 +248,11 @@ const Index = (props) => {
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('leasing_agent_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
+                                                <th className="px-4 py-2">Realtor
+                                                 <i onClick={sortOrderBy('realtor_id', 'asc')} 
+                                                className="fa fa-sort-asc"></i>
+                                                <i onClick={sortOrderBy('realtor_id', 'desc')}  
+                                                className="fa fa-sort-desc"></i></th>
                                                 <th className="px-4 py-2">Notes</th>
                                               
                                                 <th className="px-4 py-2">Edit</th>
@@ -266,6 +271,7 @@ const Index = (props) => {
                                                     <td className="border px-4 py-2">{ tenantPro.tenant_use }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.shown_by }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.leasing_agent }</td>
+                                                    <td className="border px-4 py-2">{ tenantPro.realtor }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.notes }</td>
                                                     <td className="border px-4 py-2">        
                                                         <InertiaLink href={`/tenant-prospects/${tenantPro.id}`} >

@@ -116,8 +116,7 @@ class UserController extends Controller
          // if(Gate::denies('edit')) {
          //       return abort('401');
          //  } 
-
-         if($id = auth()->id()){
+         if($id == auth()->id()){
               return redirect('/profile');
          }
 

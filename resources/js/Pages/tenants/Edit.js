@@ -1,34 +1,41 @@
 import React, { Component ,useState } from 'react';
 import Layout from '../../layouts/Layout';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react'
+import DatePicker from "react-datepicker";
 import {Inertia} from '@inertiajs/inertia';
 import Select from 'react-select';
+import "react-datepicker/dist/react-datepicker.css";
 
+const Edit = (props) => {
 
-const Create = (props) => {
+  const errors = usePage().props.errors;
 
-  const selectedOption = null;
-  const selectedPropertyOption = null;
+  const { tenant, tenantUses, tenantUse } = usePage().props;
+  let useNullArr = [{'label' : 'Select Tenant Use' , 'value' : null}];
+
+  const selectedOption  =  tenantUses.filter(item =>
+               item.value == tenant.tenant_use_id); 
 
   const [form, setForm] = useState({
-      name: "",
-      email: "",
-      password: "",
-      confirm_password: "",
-      role: "",
-      properties: [],
+      name: tenant.name,
+      address: tenant.address,
+      phone_number: tenant.phone_number,
+      emaill:    tenant.emaill,
+      tenant_use_id:    tenant.tenant_use_id
     })
-   
-  const handleSubmit = e => {
+
+    const handleSubmit = e => {
       e.preventDefault()
-      Inertia.post('/users', {
+
+      Inertia.post('/tenants/'+tenant.id, {
+          _method: 'put',
           name: form.name,
-          email: form.email,
-          password: form.password,
-          password_confirmation : form.password_confirmation,
-          role: form.role,
-          properties: form.properties
+          address: form.address,
+          phone_number: form.phone_number,
+          emaill: form.emaill,
+          tenant_use_id: form.tenant_use_id
       })
+
     }
 
   const handleChange = e =>   {
@@ -40,40 +47,27 @@ const Create = (props) => {
       }));
     }
 
-  const handleSelectChange = (selectedOption) => {
+     const handleSelectChange = (selectedOption) => {
      setForm(form => ({
           ...form,
-          role: selectedOption.value,
+          tenant_use_id: selectedOption.value
       }));
-  }  
 
-  const handleSelectPropertyChange = (selectedOption) => {
-    let propertiesArr = selectedOption.map(property =>  property.id)
-
-     setForm(form => ({
-          ...form,
-          properties: propertiesArr,
-      }));
-  }
-
-
-  const errors = usePage().props.errors;
-
-  const { properties, roles } = usePage().props;
-   
+  } 
+ 
     return (
-        <div>
+       <div>
             <Layout>
                 {/* check app.css for related css */}
                 <div className="header">
-                    <h1 className="header-text">Create User</h1>
+                    <h1 className="header-text">Edit Tenant</h1>
                 </div>
                      
                <div className="md:grid md:grid-cols-4 md:gap-6">     
                             
                <div className="md:col-span-1">
-                <InertiaLink href="/users" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
-                  Back to Users
+                <InertiaLink href="/tenants" className="p-2 mt-8 text-lg font-bold text-white bg-black hover:bg-gray-700">
+                  Back to Tenants
                   </InertiaLink>
               </div>
               {/* right side */}
@@ -82,6 +76,9 @@ const Create = (props) => {
                <form>
                 <div className="px-4 py-5 bg-white shadow sm:p-6 sm:rounded-tl-md sm:rounded-tr-md">
                   <div className="grid grid-cols-6 gap-6">
+                   
+                   
+                   
 
                     {/* name */}
                     <div className="col-span-12 sm:col-span-12">
@@ -97,70 +94,57 @@ const Create = (props) => {
 
                     </div>
 
-                  {/* account_number */}
+                  {/* address */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-                        <span>Email Addess</span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="address">
+                        <span>Address</span>
                       </label>
 
-                      <input type="email" id="email" placeholder="Email Addess"
-                                value={form.email}
+                      <input type="text" id="address" placeholder="Address"
+                                value={form.address}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
-                                {errors.email && <div className="text-sm text-red-500">{errors.email}</div>}
+                                {errors.address && <div className="text-sm text-red-500">{errors.address}</div>}
+
+                    </div> 
+
+                  {/* phone_number */}
+                    <div className="col-span-12 sm:col-span-12">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="phone_number">
+                        <span>Name</span>
+                      </label>
+
+                      <input type="number" id="phone_number" placeholder="Name"
+                                value={form.phone_number}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
+                                {errors.phone_number && <div className="text-sm text-red-500">{errors.phone_number}</div>}
 
                     </div>
 
-                  {/* password */}
+                  {/* emaill */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="password">
-                        <span>Password</span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="emaill">
+                        <span>Tenant Use</span>
                       </label>
 
-                      <input type="password" id="password" placeholder="Password"
-                                value={form.password}
+                      <input type="email" id="emaill" placeholder="Tenant Use"
+                                value={form.emaill}
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
-                                {errors.password && <div className="text-sm text-red-500">{errors.password}</div>}
+                                {errors.emaill && <div className="text-sm text-red-500">{errors.emaill}</div>}
 
-                    </div>
-
-                  {/* password_confirmation */}
+                    </div> 
+                    
+                    {/* tenant_use_id */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="password_confirmation">
-                        <span>Confirm Password</span>
-                      </label>
-                      <input type="password" id="password_confirmation" placeholder="Confirm Password"
-                                value={form.password_confirmation}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"/>
-                                {errors.password_confirmation && <div className="text-sm text-red-500">{errors.password_confirmation}</div>}
-
-                    </div>
-
-                  {/* role */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="role">
-                        <span>Role</span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="tenant_use_id">
+                        <span>Tenant Use</span>
                       </label>
                       <Select
                         defaultValue={selectedOption}
                         onChange={handleSelectChange}
-                        options={roles}
-                      />                   
-                      </div>
-
-                    {/* property */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="property">
-                        <span>Property</span>
-                      </label>
-                      <Select
-                        defaultValue={selectedPropertyOption}
-                        onChange={handleSelectPropertyChange}
-                        options={properties}
-                        isMulti
-                        isClearable
+                        options={ [...useNullArr, ...tenantUses]}
                       />                   
                       </div>
 
@@ -184,4 +168,4 @@ const Create = (props) => {
 }
 
 
-export default Create;
+export default Edit;
