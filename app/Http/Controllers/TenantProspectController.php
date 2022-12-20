@@ -6,6 +6,7 @@ use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
 use App\Models\TenantUse;
 use Illuminate\Http\Request;
+use App\Models\DocumentType;
 use App\Models\Property;
 use App\Models\Realtor;
 use App\Models\Tenant;
@@ -249,7 +250,13 @@ class TenantProspectController extends Controller
         
         $data = $request->except('_token');
 
-        TenantProspect::create($data);
+        $tenant = TenantProspect::create($data);
+
+
+        if($request->hasFile('file') && $request->file('file')->isValid()){
+            $tenant->addMediaFromRequest('file')->toMediaCollection('file');
+        }
+
 
        return redirect('tenant-prospects')->with('message', 'TenantProspect Created Successfully!');
     }
@@ -315,14 +322,14 @@ class TenantProspectController extends Controller
               return $tenant;
           });
 
-
           $tenantSuit = @$tenantProspect->suite;
 
           if($tenantSuit){
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
-
+          $tenantProspect->media =  @$tenantProspect->getMediaPath();
+              
          return Inertia::render('tenant_prospects/Edit',compact('realtors','tenantSuit','tenantProspect','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
     }
 
@@ -363,6 +370,11 @@ class TenantProspectController extends Controller
          }
           
         $tenantProspect->update($data);
+
+        if($request->hasFile('file') && $request->file('file')->isValid()){
+            $tenantProspect->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
+        }
+
           
         return redirect('tenant-prospects')->with('message', 'Tenant Prospect Updated Successfully!');
     }

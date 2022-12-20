@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\MediaManager;
 
-class TenantProspect extends Model
+class TenantProspect extends Model 
 {
-    use HasFactory;
+    use HasFactory, MediaManager;
+
+    CONST TENANT_PROSPECT_PATH  = 'tenant_prospects';
 
     protected $fillable = [
         'date', 'showing_date', 'property_id', 'suite_id',

@@ -10,7 +10,8 @@ class DocumentType extends Model
     use HasFactory;
 
     CONST SHOWING_NOTE     = 'Showing Note';
-   
+    CONST TENANT_PROSPECT  = 'Tenant Prospect';
+
 
     protected $perPage = 20;
 
