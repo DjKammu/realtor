@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import {Inertia} from '@inertiajs/inertia';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
-
 const Edit = (props) => {
 
   const errors = usePage().props.errors;
