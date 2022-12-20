@@ -20,7 +20,7 @@ class DocumentType extends Model
     ];
 
     public static $notEditable = [
-      self::SHOWING_NOTE
+      self::SHOWING_NOTE , self::TENANT_PROSPECT
     ];
 
      public function documents(){

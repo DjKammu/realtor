@@ -17,6 +17,7 @@ trait MediaManager {
     	 	$fileName = $name.'.'. $fileArr->getClientOriginalExtension();
     	    $fileArr->storeAs($this->path, $fileName, 'media');
             $this->fileName = $fileName; 
+            $this->mimeType = $mimeType; 
             $this->name = $name; 
     	    $this->saveMedia();
     	 }
@@ -72,8 +73,8 @@ trait MediaManager {
     public function toPath($path){
 
     	   if(!\File::exists(public_path().$path)) {
-			  \File::makeDirectory(public_path().'/'.$path, $mode = 0777, true, true);
-			}
+    			  \File::makeDirectory(public_path().'/'.$path, $mode = 0777, true, true);
+    			}
            $this->path = $path; 
     	   return $this;
     }
@@ -81,7 +82,7 @@ trait MediaManager {
     public function docType($type){
         $docType = null;
         if($type){
-        	$docType = DocumentType::updateOrCreate(
+        	$docType = DocumentType::firstOrCreate(
 			    ['name' => $type],
 			    ['account_number' => DocumentType::max('account_number') + 100 , 
 			      'slug' => \Str::slug($type)]

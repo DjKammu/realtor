@@ -95,6 +95,14 @@ function Sidebar({sidebarOpen, setSidebarOpen}) {
                     <span className="text-sm font-medium"> Tenant Prospect </span>
                 </div>
               </InertiaLink>
+            </li>
+             <li className="px-3 py-2 rounded-sm mb-0.5">
+              <InertiaLink href="/leases" className="block text-gray-200 hover:text-white">
+                <div className="flex items-center flex-grow">
+                     <i className="fa fa-building w-6 h-6 mr-1"></i>
+                    <span className="text-sm font-medium"> Leases </span>
+                </div>
+              </InertiaLink>
             </li> 
             <li className="px-3 py-2 rounded-sm mb-0.5">
               <InertiaLink href="/setup" className="block text-gray-200 hover:text-white">

@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/tenant_prospects
+/public/leases
 /storage/*.key
 /vendor
 .env

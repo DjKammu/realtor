@@ -37,6 +37,7 @@ Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
 Route::resource('suites', App\Http\Controllers\SuiteController::class);
 Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
+Route::resource('leases', App\Http\Controllers\LeaseController::class);
 Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
 Route::resource('tenant-uses', App\Http\Controllers\TenantUseController::class);
@@ -45,7 +46,9 @@ Route::resource('realtors', App\Http\Controllers\RealtorController::class);
 
 
  Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,
-    'downloadPDF'])->name('download.tenant-prospects');
+    'downloadPDF'])->name('download.tenant-prospects'); 
+ Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
+    'downloadPDF'])->name('download.leases');
 
 
 // Profile Routes 

@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\TenantProspect;
 use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
 use App\Models\TenantUse;
@@ -11,13 +10,14 @@ use App\Models\Property;
 use App\Models\Realtor;
 use App\Models\Tenant;
 use App\Models\Suite;
+use App\Models\Lease;
 use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Gate;
 use PDF;
 
-class TenantProspectController extends Controller
+class LeaseController extends Controller
 {
      /**
      * Create a new controller instance.
@@ -40,7 +40,7 @@ class TenantProspectController extends Controller
                return abort('401');
          }
          
-         $tenantProspects = TenantProspect::query();
+         $leases = Lease::query();
 
          $orderBy = 'tenant_name';  
          $order ='asc' ;
@@ -54,32 +54,32 @@ class TenantProspectController extends Controller
 
              if($orderBy == 'property_id' ){
                     $orderBy = Property::select('name')
-                          ->whereColumn('properties.id', 'tenant_prospects.property_id');
+                          ->whereColumn('properties.id', 'leases.property_id');
 
              }elseif($orderBy == 'tenant_name' ){
 
                     $orderBy = Tenant::select('name')
-                   ->whereColumn('tenants.id', 'tenant_prospects.tenant_name');
+                   ->whereColumn('tenants.id', 'leases.tenant_name');
 
              }elseif($orderBy == 'tenant_use' ){
 
                     $orderBy = TenantUse::select('name')
-                   ->whereColumn('tenant_uses.id', 'tenant_prospects.tenant_use');
+                   ->whereColumn('tenant_uses.id', 'leases.tenant_use');
 
              }elseif($orderBy == 'suite_id' ){
                     $orderBy = Suite::select('name')
-                          ->whereColumn('suites.id', 'tenant_prospects.suite_id');
+                          ->whereColumn('suites.id', 'leases.suite_id');
 
              }elseif($orderBy == 'shown_by_id' ){
                     $orderBy = User::select('name')
-                          ->whereColumn('users.id', 'tenant_prospects.shown_by_id');
+                          ->whereColumn('users.id', 'leases.shown_by_id');
 
              }elseif($orderBy == 'leasing_agent_id' ){
                     $orderBy = User::select('name')
-                          ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id');
+                          ->whereColumn('users.id', 'leases.leasing_agent_id');
              }elseif($orderBy == 'realtor_id' ){
                     $orderBy = Realtor::select('name')
-                             ->whereColumn('realtors.id', 'tenant_prospects.realtor_id');
+                             ->whereColumn('realtors.id', 'leases.realtor_id');
              }
 
         }
@@ -111,13 +111,13 @@ class TenantProspectController extends Controller
               return $leasingSt;
           });
 
-         $dateArr = TenantProspect::$dateArr;
+         $dateArr = Lease::$dateArr;
          $date = request()->date;
          $property = request()->property;
          $suite = request()->suite;
          $shown_by = request()->shown_by;
          $leasing_agent = request()->leasing_agent;
-         $tenantProspects = $tenantProspects->when($property, function ($q) use 
+         $leases = $leases->when($property, function ($q) use 
            ($property) {$q->where('property_id',$property);
           })->when($suite, function ($q) use 
            ($suite) {$q->where('suite_id',$suite);
@@ -145,30 +145,30 @@ class TenantProspectController extends Controller
               return $suite;
           });
 
-         $tenantProspects = $tenantProspects->addSelect(['property' => Property::select('name')
-            ->whereColumn('properties.id', 'tenant_prospects.property_id')
+         $leases = $leases->addSelect(['property' => Property::select('name')
+            ->whereColumn('properties.id', 'leases.property_id')
             ->take(1),
             'suite' => Suite::select('name')
-            ->whereColumn('suites.id', 'tenant_prospects.suite_id')
+            ->whereColumn('suites.id', 'leases.suite_id')
             ->take(1),
             'shown_by' => User::select('name')
-            ->whereColumn('users.id', 'tenant_prospects.shown_by_id')
+            ->whereColumn('users.id', 'leases.shown_by_id')
             ->take(1),
             'leasing_agent' => User::select('name')
-            ->whereColumn('users.id', 'tenant_prospects.leasing_agent_id')
+            ->whereColumn('users.id', 'leases.leasing_agent_id')
             ->take(1),
             'realtor' => Realtor::select('name')
-            ->whereColumn('realtors.id', 'tenant_prospects.realtor_id')
+            ->whereColumn('realtors.id', 'leases.realtor_id')
             ->take(1),
             'tenant_name' => Tenant::select('name')
-            ->whereColumn('tenants.id', 'tenant_prospects.tenant_name')
+            ->whereColumn('tenants.id', 'leases.tenant_name')
             ->take(1),
             'tenant_use' => TenantUse::select('name')
-            ->whereColumn('tenant_uses.id', 'tenant_prospects.tenant_use')
+            ->whereColumn('tenant_uses.id', 'leases.tenant_use')
             ->take(1)
-        ])->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
+        ])->orderBy($orderBy,$order)->paginate((new Lease())->perPage); 
       
-         return Inertia::render('tenant_prospects/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','tenantProspects','properties',
+         return Inertia::render('leases/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','leases','properties',
           'users','showingStatus','leasingStatus','tenantSuit','suitesArr'));
     }
 
@@ -229,7 +229,7 @@ class TenantProspectController extends Controller
           });
 
 
-          return Inertia::render('tenant_prospects/Create',compact('tenantUses','properties','users',
+          return Inertia::render('leases/Create',compact('tenantUses','properties','users',
             'showingStatus','leasingStatus','realtors','tenantUses','tenants'));
     }
 
@@ -250,15 +250,15 @@ class TenantProspectController extends Controller
         
         $data = $request->except('_token');
 
-        $tenant = TenantProspect::create($data);
+        $lease = Lease::create($data);
 
 
         if($request->hasFile('file') && $request->file('file')->isValid()){
-         //   $tenant->addMediaFromRequest('file')->toMediaCollection('file');
+            //$lease->addMediaFromRequest('file')->toMediaCollection('file');
         }
 
 
-       return redirect('tenant-prospects')->with('message', 'TenantProspect Created Successfully!');
+       return redirect('leases')->with('message', 'Lease Created Successfully!');
     }
 
     /**
@@ -273,7 +273,7 @@ class TenantProspectController extends Controller
                return abort('401');
           } 
 
-         $tenantProspect = TenantProspect::find($id);
+         $lease = Lease::find($id);
 
          $properties = Property::orderBy('name')->get();
 
@@ -322,15 +322,15 @@ class TenantProspectController extends Controller
               return $tenant;
           });
 
-          $tenantSuit = @$tenantProspect->suite;
+          $tenantSuit = @$lease->suite;
 
           if($tenantSuit){
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
-          $tenantProspect->media = (@$tenantProspect) ?  @$tenantProspect->getMediaPath() : null;
+          // $lease->media =  @$lease->getMediaPath();
               
-         return Inertia::render('tenant_prospects/Edit',compact('realtors','tenantSuit','tenantProspect','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
+         return Inertia::render('leases/Edit',compact('realtors','tenantSuit','lease','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
     }
 
     /**
@@ -363,16 +363,16 @@ class TenantProspectController extends Controller
         
         $data = $request->except('_token');
         
-        $tenantProspect = TenantProspect::find($id);
+        $lease = TenantProspect::find($id);
 
-         if(!$tenantProspect){
+         if(!$lease){
             return redirect()->back();
          }
           
-        $tenantProspect->update($data);
+        $lease->update($data);
 
         if($request->hasFile('file') && $request->file('file')->isValid()){
-            $tenantProspect->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
+            // $lease->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
         }
 
           
@@ -390,17 +390,17 @@ class TenantProspectController extends Controller
          if(Gate::denies('delete')) {
                return abort('401');
           } 
-         TenantProspect::find($id)->delete();
+         Lease::find($id)->delete();
 
-        return redirect()->back()->with('message', 'Tenant Prospect Deleted Successfully!');
+        return redirect()->back()->with('message', 'Lease Deleted Successfully!');
     }
 
     public function downloadPDF($id,$view = false){
 
-        $tenant_prospects = TenantProspect::all();
+        $leases = Lease::all();
 
-        $pdf = PDF::loadView('tenant_prospects.pdf',
-          ['tenant_prospects' => $tenant_prospects]
+        $pdf = PDF::loadView('leases.pdf',
+          ['leases' => $leases]
         );
          
        // $view = true; 
@@ -408,7 +408,7 @@ class TenantProspectController extends Controller
         // return $pdf->stream('tenant_prospects.pdf');
          return $pdf->setPaper('a4')->output();
         }
-        return $pdf->download('tenant_prospects.pdf');
+        return $pdf->download('leases.pdf');
     }
 
 }
