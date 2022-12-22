@@ -16,3 +16,17 @@ i.fa.fa-sort-asc{
 .sorting-outer a{
   color: #ef8157 ;
 }
+.delete-file{
+  position: relative;
+}
+span.cross{
+    position: absolute;
+    z-index: 10;
+    right: -11px;
+     display: none;
+    top: -12px;
+    cursor: pointer;
+}
+.delete-file:hover span.cross{
+  display: block;
+}

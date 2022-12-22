@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\MediaManager;
 
 class Lease extends Model
 {
-    use HasFactory;
+    use HasFactory, MediaManager;
 
-    CONST LEASE_PATH  = 'leases';
+    CONST LEASE_PATH  = 'lease_attachments';
 
     protected $fillable = [
         'date', 'showing_date', 'property_id', 'suite_id',

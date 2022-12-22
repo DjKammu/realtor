@@ -11,6 +11,7 @@ class DocumentType extends Model
 
     CONST SHOWING_NOTE     = 'Showing Note';
     CONST TENANT_PROSPECT  = 'Tenant Prospect';
+    CONST LEASE  = 'Lease';
 
 
     protected $perPage = 20;
@@ -20,7 +21,7 @@ class DocumentType extends Model
     ];
 
     public static $notEditable = [
-      self::SHOWING_NOTE , self::TENANT_PROSPECT
+      self::SHOWING_NOTE , self::TENANT_PROSPECT, self::LEASE
     ];
 
      public function documents(){

@@ -21,6 +21,7 @@ const Create = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [showingDate, setShowingDate] = useState(new Date());
   const [suites, setSuites] = useState([]);
+  const [fileValues, setFileValues] = useState([{ name: "", file : ""}])
 
   const [form, setForm] = useState({
       date: new Date(),
@@ -52,7 +53,8 @@ const Create = (props) => {
           realtor_id: form.realtor_id,
           tenant_name: form.tenant_name,
           tenant_use: form.tenant_use,
-          notes: form.notes
+          notes: form.notes,
+          files: form.files
       })
     }
 
@@ -166,6 +168,27 @@ const Create = (props) => {
           realtor_id: option.value
       }));
   }
+
+const handleFileChange = (i, e) => {
+    let newFileValues = [...fileValues];
+    newFileValues[i][e.target.name] = (e.target.name == 'name') ? e.target.value : e.target.files[0] ;
+    setFileValues(newFileValues);
+    setForm(form => ({
+          ...form,
+          files:  [...fileValues]
+    }));
+ }
+    
+let addFormFields = () => {
+    setFileValues([...fileValues, { name: "", file: "" }])
+ }
+
+let removeFormFields = (i) => {
+    let newFileValues = [...fileValues];
+    newFileValues.splice(i, 1);
+    setFileValues(newFileValues)
+}
+
 
   const errors = usePage().props.errors;
 
@@ -336,7 +359,36 @@ const Create = (props) => {
                                 ></textarea>
                     </div>
 
+                    {/* file */}
+                     <div className="col-span-12 sm:col-span-12">
+                        <label className="block text-sm font-medium text-gray-700" htmlFor="file">
+                          <span>Files</span>
+                        </label>
+                      </div>
+                       {form.media && <a href={form.media} target="_new" >Attachment </a>}
+
                   </div>
+
+                  {fileValues.map((element, index) => (
+                    <div className="form-inline" key={index}>
+                     
+                      <input className="w-2/5 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      placeholder="File Name" type="text" name="name" value={element.name || ""} onChange={e => handleFileChange(index, e)} />
+                     
+                      <input type="file" className="w-1/2 px-3" name="file"  onChange={e => handleFileChange(index, e)} />
+                      {
+                        index ? 
+                          <button type="button"  className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 remove" onClick={() => removeFormFields(index)}>X</button> 
+                        : null
+                      }
+                    </div>
+                  ))}
+
+                   <div className="text-right">
+                      <button className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 add" type="button" onClick={() => addFormFields()}>
+                      <i className="fa fa-plus"></i></button>
+                  </div>
+                  
                 </div>
                 {/* actions */}
                 <div className="flex items-center justify-end px-4 py-3 text-right border-t shadow bg-gray-50 sm:px-6 sm:rounded-bl-md sm:rounded-br-md">

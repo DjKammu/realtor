@@ -35,6 +35,7 @@ const Create = (props) => {
       realtor_id: "",
       tenant_name: "",
       tenant_use: "",
+      file: '',
       notes: ""
     })
    
@@ -52,6 +53,7 @@ const Create = (props) => {
           realtor_id: form.realtor_id,
           tenant_name: form.tenant_name,
           tenant_use: form.tenant_use,
+          file: form.file,
           notes: form.notes
       })
     }
@@ -166,6 +168,14 @@ const Create = (props) => {
           realtor_id: option.value
       }));
   }
+
+  const handleFileChange = (e) => {
+     setForm(form => ({
+          ...form,
+          file:  e.target.files[0]
+      }));
+  }
+
 
   const errors = usePage().props.errors;
 
@@ -335,6 +345,17 @@ const Create = (props) => {
                                 className="w-full px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                 ></textarea>
                     </div>
+                   
+                   {/* file */}
+                    <div className="col-span-12 sm:col-span-12">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="file">
+                        <span>File</span>
+                      </label>
+                      <input type="file" id="file" 
+                          onChange={handleFileChange} 
+                      />
+                    </div>
+                   
 
                   </div>
                 </div>

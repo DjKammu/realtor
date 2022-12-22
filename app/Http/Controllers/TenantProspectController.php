@@ -251,10 +251,9 @@ class TenantProspectController extends Controller
         $data = $request->except('_token');
 
         $tenant = TenantProspect::create($data);
-
-
+ 
         if($request->hasFile('file') && $request->file('file')->isValid()){
-         //   $tenant->addMediaFromRequest('file')->toMediaCollection('file');
+             $tenant->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
         }
 
 
@@ -328,7 +327,7 @@ class TenantProspectController extends Controller
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
-          $tenantProspect->media = (@$tenantProspect) ?  @$tenantProspect->getMediaPath() : null;
+          $tenantProspect->media = (@$tenantProspect) ?  @$tenantProspect->getMediaPathWithExtension() : null;
               
          return Inertia::render('tenant_prospects/Edit',compact('realtors','tenantSuit','tenantProspect','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
     }
@@ -372,6 +371,7 @@ class TenantProspectController extends Controller
         $tenantProspect->update($data);
 
         if($request->hasFile('file') && $request->file('file')->isValid()){
+            $tenantProspect->deleteFile();
             $tenantProspect->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
         }
 

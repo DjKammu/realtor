@@ -9,21 +9,44 @@ use DB;
 
 trait MediaManager {
      
-    public function storeFile($input, $multiple = false){
+    public function storeFile($input, $multiple = false, $nameInput = null){
     	 $fileArr = request()->{$input};
+       $nameArr = request()->{$nameInput};
+      
     	 if(!$multiple){
     	 	$mimeType =  $fileArr->getClientMimeType();
-    	 	$name = pathinfo($fileArr)['filename'].'_'.time();
-    	 	$fileName = $name.'.'. $fileArr->getClientOriginalExtension();
-    	    $fileArr->storeAs($this->path, $fileName, 'media');
+    	 	$name = ($nameArr) ?  $nameArr : @pathinfo($fileArr)['filename'].'_'.time();
+    	 	$fileName = $this->uniqueFilename(\Str::slug($name).'.'. $fileArr->getClientOriginalExtension());
+    	      $fileArr->storeAs($this->path, $fileName, 'media');
             $this->fileName = $fileName; 
             $this->mimeType = $mimeType; 
             $this->name = $name; 
-    	    $this->saveMedia();
-    	 }
+    	      $this->saveMedia();
+    	 }else{
+
+        foreach ($fileArr as $key => $file) {
+          $mimeType =  $file->getClientMimeType();
+          $name = (@$nameArr[$key]) ?  $nameArr[$key] : @pathinfo($file)['filename'].'_'.time();
+          $fileName = $this->uniqueFilename(\Str::slug($name).'.'. $file->getClientOriginalExtension());
+              $file->storeAs($this->path, $fileName, 'media');
+              $this->fileName = $fileName; 
+              $this->mimeType = $mimeType; 
+              $this->name = $name; 
+              $this->saveMedia();
+        }
+       }
     	return true;
 
     } 
+
+    public function uniqueFilename($fileName){
+
+      $exists = DB::table('media')
+              ->where(['file_name' => $fileName])
+              ->exists(); 
+      return ($exists) ? time().$fileName : $fileName; 
+
+    }
 
     public function saveMedia() {
         $class = get_class($this);
@@ -38,36 +61,95 @@ trait MediaManager {
          
         return true; 
     }
-    
-    public function allMedia(){
-         $files = DB::table('media')
+    public function buildQuery($where = []){
+        $query = DB::table('media')
               ->where(['model_type' => get_class($this),
                 'model_id' => $this->id])
-             ->get();    
-          return $files;   
+              ->when($where, function ($q) use 
+               ($where) {
+                $q->where($where);
+              });   
+
+        return $query;     
+
     }
-    public function getMedia(){
+
+    public function getQuery($where = []){
+        $files = $this->buildQuery($where)
+            ->get();   
+        return $files;     
+    } 
+
+    public function deleteQuery($where = []){
+        $files = $this->buildQuery($where)
+            ->delete();   
+        return true;     
+    }
+
+    public function allMedia(){
+          return $this->getQuery();   
+    }
+    public function getMedia($extesion = false){
          $files = $this->allMedia();
         
-          $files = @$files->filter(function($file){
-              $file->path = $this->getFullPath($file);
+          $files = @$files->filter(function($file) use ($extesion){
+              $file->path = $this->getFullPath($file,$extesion);
               return $file;
           });      
     	return ($files->count() == 1) ? $files->first() : ($files->count() == 0 ? null : $files) ;  
     }
 
-    public function getMediaPath(){
+    public function getMediaPath($extesion = false){
       $files =  $this->allMedia();
     
-  	 $files = @$files->map(function($file){
-          return $file->path = $this->getFullPath($file);
-      }); 
+  	 $files = @$files->map(function($file) use ($extesion){
+          return $file->path = $this->getFullPath($file,$extesion);
+     }); 
 
-	 return ($files->count() == 1) ? $files->first() : ($files->count() == 0 ? null : $files) ;  
+	   return ($files->count() == 1) ? $files->first() : ($files->count() == 0 ? null : $files) ;  
+    } 
+
+    public function getMediaPathWithExtension(){
+      return $this->getMediaPath(true);
     }
 
-    public function getFullPath($file){
+    public function getFullPath($file,$extesion = null){
+
+      if($extesion){
+         return [
+               'file' => ($file) ?  asset($file->path.'/'.$file->file_name) : null ,
+               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null
+              ];
+      }
+
     	return ($file) ?  asset($file->path.'/'.$file->file_name) : null;
+    }
+
+    public function getPublicPath($file,$extesion = null){
+
+      if($extesion){
+         return [
+               'file' => ($file) ?  public_path($file->path.'/'.$file->file_name) : null ,
+               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null
+              ];
+      }
+
+      return ($file) ?  public_path($file->path.'/'.$file->file_name) : null;
+    }
+
+    public function deleteFile($file = null){
+       $where = ($file) ? ['file_name' => $file] : [];
+       $files = $this->getQuery($where); 
+      
+       foreach ($files as $key => $file) {
+             $dFile = $file->path = $this->getPublicPath($file);
+             @unlink($dFile);
+       }
+
+       $this->deleteQuery($where);
+
+       return true; 
+
     }
 
     public function toPath($path){
@@ -76,18 +158,18 @@ trait MediaManager {
     			  \File::makeDirectory(public_path().'/'.$path, $mode = 0777, true, true);
     			}
            $this->path = $path; 
-    	   return $this;
+    	    return $this;
     }
 
     public function docType($type){
         $docType = null;
         if($type){
         	$docType = DocumentType::firstOrCreate(
-			    ['name' => $type],
-			    ['account_number' => DocumentType::max('account_number') + 100 , 
-			      'slug' => \Str::slug($type)]
-			);
-			$docType = $docType->id;
+    			    ['name' => $type],
+    			    ['account_number' => DocumentType::max('account_number') + 100 , 
+    			      'slug' => \Str::slug($type)]
+    			);
+    			$docType = $docType->id;
         }
     
     	$this->docType = $docType;

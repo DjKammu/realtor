@@ -47,7 +47,8 @@ const Edit = (props) => {
       tenant_name:    tenantProspect.tenant_name,
       tenant_use:    tenantProspect.tenant_use,
       file:     tenantProspect.file,
-      media:     tenantProspect.media,
+      media:     tenantProspect.media.file,
+      ext :     tenantProspect.media.ext,
       notes:    tenantProspect.notes
     })
 
@@ -365,7 +366,9 @@ const Edit = (props) => {
                           onChange={handleFileChange} 
                       />
                     </div>
-                     {form.media && <a href={form.media} target="_new" >Attachment </a>}
+                     {form.media && 
+                      <a href={form.media} target="_new" ><img src={`/images/${form.ext}.png`} />
+                      </a>}
                    
                   </div>
                 </div>

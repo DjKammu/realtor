@@ -34,6 +34,8 @@ const Edit = (props) => {
   const [showingDate, setShowingDate] = useState(new Date(lease.showing_date));
   const [suites, setSuites] = useState([]);
 
+  const [fileValues, setFileValues] = useState([{ name: "", file : ""}])
+
   const [form, setForm] = useState({
       date: lease.date,
       showing_date: lease.showing_date,
@@ -51,9 +53,24 @@ const Edit = (props) => {
       notes:    lease.notes
     })
 
+    const deleteFunc = (e) => {
+        e.preventDefault()
+        
+        if(!confirm('Are you sure?')){
+          return;
+        }
+
+        const file = e.target.id;
+
+        Inertia.get('/leases-attachment/delete/'+lease.id+'?file='+file, {
+            preserveScroll: true,
+          },{
+            onError: () => id.current.focus(),
+          })
+      }
+
     const handleSubmit = e => {
       e.preventDefault()
-
       Inertia.post('/leases/'+lease.id, {
           _method: 'put',
           date: form.date,
@@ -68,9 +85,9 @@ const Edit = (props) => {
           tenant_name: form.tenant_name,
           tenant_use: form.tenant_use,
           file: form.file,
-          notes: form.notes
+          notes: form.notes,
+          files: form.files
       })
-
     }
 
   const handleChange = e =>   {
@@ -184,12 +201,26 @@ const Edit = (props) => {
       }));
   } 
 
-  const handleFileChange = (e) => {
-     setForm(form => ({
+  const handleFileChange = (i, e) => {
+    let newFileValues = [...fileValues];
+    newFileValues[i][e.target.name] = (e.target.name == 'name') ? e.target.value : e.target.files[0] ;
+    setFileValues(newFileValues);
+    setForm(form => ({
           ...form,
-          file:  e.target.files[0]
-      }));
-  }
+          files:  [...fileValues]
+    }));
+ }
+    
+let addFormFields = () => {
+    setFileValues([...fileValues, { name: "", file: "" }])
+ }
+
+let removeFormFields = (i) => {
+    let newFileValues = [...fileValues];
+    newFileValues.splice(i, 1);
+    setFileValues(newFileValues)
+}
+
 
    
     return (
@@ -357,19 +388,39 @@ const Edit = (props) => {
                                 ></textarea>
                     </div> 
                   {/* file */}
-                   /* <div className="col-span-12 sm:col-span-12">
+                   <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="file">
-                        <span>File</span>
+                        <span>Files</span>
                       </label>
-                      <input type="file" id="file" 
-                          onChange={handleFileChange} 
-                      />
                     </div>
-                     {form.media && <a href={form.media} target="_new" >Attachment </a>}
                    
-                  </div>*/
+                  </div>
+
+                   {fileValues.map((element, index) => (
+                    <div className="form-inline" key={index}>
+                     
+                      <input className="w-2/5 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      placeholder="File Name" type="text" name="name" value={element.name || ""} onChange={e => handleFileChange(index, e)} />
+                     
+                      <input type="file" className="w-1/2 px-3" name="file"  onChange={e => handleFileChange(index, e)} />
+                      {
+                        index ? 
+                          <button type="button"  className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 remove" onClick={() => removeFormFields(index)}>X</button> 
+                        : null
+                      }
+                    </div>
+                  ))}
+
+                   <div className="text-right">
+                      <button className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 add" type="button" onClick={() => addFormFields()}>
+                      <i className="fa fa-plus"></i></button>
+                  </div>
+
+                 
                 </div>
+
                 {/* actions */}
+
                 <div className="flex items-center justify-end px-4 py-3 text-right border-t shadow bg-gray-50 sm:px-6 sm:rounded-bl-md sm:rounded-br-md">
                     <button type="submit"
                       onClick={handleSubmit}
@@ -378,6 +429,37 @@ const Edit = (props) => {
                     </button>
                 </div>
               </form>
+
+               {/* attached file */}
+               <div className="px-4 py-5 bg-white shadow sm:p-6 sm:rounded-tl-md sm:rounded-tr-md">
+               <div className="grid grid-cols-6 gap-6">
+                   <div className="col-span-12 sm:col-span-12">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="file">
+                        <span>Attached Files</span>
+                      </label>
+
+                    </div>
+                       {form.media && form.media.length > 0 && 
+                       
+                       form.media.map((element, index) => (
+                         <a className="delete-file" href={element.file} target="_new" >
+                           <img src={`/images/${element.ext}.png`} />
+                           <span className="cross">
+                             <form onSubmit={deleteFunc} id={element.file}>
+                                    <button
+                                      className="text-gray-800"
+                                      type="submit"
+                                    >
+                                    <i className="fa fa-trash"></i>
+                                    </button>
+                              </form>
+                           </span>
+                         </a>
+                      ))
+                    }
+                </div>
+                </div>
+
               </div>
               </div>
                            

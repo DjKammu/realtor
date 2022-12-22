@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\ShowingStatus;
@@ -252,9 +253,18 @@ class LeaseController extends Controller
 
         $lease = Lease::create($data);
 
+        if($request->filled('files')){
+             
+             $filesData = $data['files'];
 
-        if($request->hasFile('file') && $request->file('file')->isValid()){
-            //$lease->addMediaFromRequest('file')->toMediaCollection('file');
+             $files = array_column( $filesData,'file');
+             $names = array_column( $filesData,'name');
+
+             $request->merge(['attachements' =>$files ]);
+             $request->merge(['names' =>  $names]);
+             
+             $lease->docType(DocumentType::LEASE)->toPath(Lease::LEASE_PATH)
+                ->storeFile('attachements',true,'names');
         }
 
 
@@ -328,8 +338,9 @@ class LeaseController extends Controller
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
-          // $lease->media =  @$lease->getMediaPath();
-              
+
+         $lease->media =  @$lease->getMediaPathWithExtension()['file'] ? [@$lease->getMediaPathWithExtension()] : @$lease->getMediaPathWithExtension();
+         
          return Inertia::render('leases/Edit',compact('realtors','tenantSuit','lease','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
     }
 
@@ -363,20 +374,29 @@ class LeaseController extends Controller
         
         $data = $request->except('_token');
         
-        $lease = TenantProspect::find($id);
+        $lease = Lease::find($id);
 
          if(!$lease){
             return redirect()->back();
          }
-          
+
         $lease->update($data);
 
-        if($request->hasFile('file') && $request->file('file')->isValid()){
-            // $lease->docType(DocumentType::TENANT_PROSPECT)->toPath(TenantProspect::TENANT_PROSPECT_PATH)->storeFile('file');
-        }
+        if($request->filled('files')){
+             
+             $filesData = $data['files'];
 
+             $files = array_column( $filesData,'file');
+             $names = array_column( $filesData,'name');
+
+             $request->merge(['attachements' =>$files ]);
+             $request->merge(['names' =>  $names]);
+             
+             $lease->docType(DocumentType::LEASE)->toPath(Lease::LEASE_PATH)
+                ->storeFile('attachements',true,'names');
+        }
           
-        return redirect('tenant-prospects')->with('message', 'Tenant Prospect Updated Successfully!');
+        return redirect('leases')->with('message', 'Lease Updated Successfully!');
     }
 
     /**
@@ -410,5 +430,19 @@ class LeaseController extends Controller
         }
         return $pdf->download('leases.pdf');
     }
+   
+    public function deleteAttachment($id){
 
+       $lease = Lease::find($id);
+
+         if(!$lease){
+            return redirect()->back();
+         }
+
+         $file = @end(explode('/', request()->file));
+
+         $lease->deleteFile($file);
+
+         return redirect()->back()->with('message', 'File Deleted Successfully!');
+    }
 }

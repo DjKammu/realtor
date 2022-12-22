@@ -50,6 +50,9 @@ Route::resource('realtors', App\Http\Controllers\RealtorController::class);
  Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
     'downloadPDF'])->name('download.leases');
 
+ Route::get('leases-attachment/delete/{id}', [App\Http\Controllers\LeaseController::class,
+    'deleteAttachment'])->name('leases.attachment.delete');
+
 
 // Profile Routes 
 Route::group(['middleware' => 'auth'], function() {
