@@ -4,6 +4,7 @@ import {Inertia} from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react'
 import { sortOrderBy } from '@/hooks/constants';
 import Pagination from '@/Pagination';
+import Favourite from '@/Favourite';
 import Select from 'react-select';
 
 const Index = (props) => {
@@ -137,11 +138,11 @@ const Index = (props) => {
 
   }
 
- 
-      
+
     return (
         <div>
             <Layout>
+               <Favourite />
                 {/* check app.css for related css */}
                 <div className="header">
                     <h1 className="header-text">Leases</h1>

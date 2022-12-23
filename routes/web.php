@@ -36,8 +36,7 @@ Route::resource('properties', App\Http\Controllers\PropertyController::class);
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
 Route::resource('suites', App\Http\Controllers\SuiteController::class);
-Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
-Route::resource('leases', App\Http\Controllers\LeaseController::class);
+
 Route::get('get-suites', [App\Http\Controllers\SuiteController::class, 'getSuites'])->name('suites.properties');
 Route::resource('document-types', App\Http\Controllers\DocumentTypeController::class);
 Route::resource('tenant-uses', App\Http\Controllers\TenantUseController::class);
@@ -45,6 +44,9 @@ Route::resource('tenants', App\Http\Controllers\TenantController::class);
 Route::resource('realtors', App\Http\Controllers\RealtorController::class);
 
 
+// Modules Routes 
+Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
+Route::resource('leases', App\Http\Controllers\LeaseController::class);
  Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,
     'downloadPDF'])->name('download.tenant-prospects'); 
  Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
@@ -64,6 +66,23 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('/profileDelete', [profileController::class, 'deleteProfile'])->name('profileDelete');
 
 });
+
+
+
+// Favourite Routes
+Route::resource('favourites', App\Http\Controllers\FavouriteUrlController::class);
+Route::post('favourite',[ App\Http\Controllers\FavouriteUrlController::class,'getFavourite'])->name('get.favourite');
+
+
+Route::get('favourites',[ App\Http\Controllers\FavouriteUrlController::class,'favourites'])->name('favourites');
+
+Route::get('make-favourite',[ App\Http\Controllers\FavouriteUrlController::class,'makeFavourite'])->name('make.favourite');
+
+Route::post('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'updateFavourite'])->name('update.favourite');
+
+Route::delete('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'deleteFavourite'])->name('delete.favourite');
+
+
 
 
 // Migration Routes
