@@ -47,8 +47,8 @@ const Edit = (props) => {
       tenant_name:    tenantProspect.tenant_name,
       tenant_use:    tenantProspect.tenant_use,
       file:     tenantProspect.file,
-      media:     tenantProspect.media.file,
-      ext :     tenantProspect.media.ext,
+      media:     (tenantProspect.media) ? tenantProspect.media.file : null,
+      ext :     tenantProspect.media ? tenantProspect.media.ext : null,
       notes:    tenantProspect.notes
     })
 
