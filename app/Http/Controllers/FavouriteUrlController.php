@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -9,6 +8,7 @@ use App\Models\User;
 use App\Models\Role;
 use Inertia\Inertia;
 use Gate;
+use Auth;
 
 class FavouriteUrlController extends Controller
 {
@@ -35,8 +35,17 @@ class FavouriteUrlController extends Controller
          //       return abort('401');
          // }
 
-         $users = User::paginate((new User())->perPage); 
-         return Inertia::render('users/Index',['users' => $users]);
+         $user = Auth::user();
+
+         $status = 1;
+        
+         $favourites =  FavouriteUrl::where(function($q){
+              $q->where('user_id', auth()->user()->id); 
+              $q->where('status',1); 
+          })->orderBy('label','asc')
+          ->paginate((new FavouriteUrl())->perPage); 
+
+         return Inertia::render('favourites/Index',['favourites' => $favourites]);
     }
 
     /**
@@ -156,34 +165,22 @@ class FavouriteUrlController extends Controller
      */
     public function update(Request $request, $id)
     {    
-
-        //  if(Gate::denies('update')) {
-        //        return abort('401');
-        // } 
-
-        $data = $request->except(['_token','password','password_confirmation']);
-    
-        $request->validate([
-              'name' => 'required|max:255',
-              'email' => 'required|email|max:255|unique:users,id,:id',
-              'password' => 'nullable|sometimes|min:6|confirmed|required_with:password'
-        ]);
        
-        ($request->filled('password')) ? $data['password'] = \Hash::make($request->password) 
-        : '';
+      $user = Auth::user();
 
-         $user = User::find($id);
+      $url  = FavouriteUrl::where(['id' => $id, 'user_id' => $user->id]);
+        
+      $return = redirect()->back();
+        
+      if($url->exists()){
+        $url->update(['label' => $request->label ]);
+        $return = redirect()->back()->with('message', 'Favourite URL Updated Successfully!');
+      }else{
+       $return = redirect()->back()->withErrors('URL Can`t be Updated!');
+      }
+     
+      return $return;
 
-         if(!$user){
-            return redirect()->back();
-         }
-          
-        $user->update($data);
-
-        $user->roles()->sync($data['role']);
-        $user->properties()->sync($data['properties']); 
-       
-        return redirect('users')->with('message', 'User Updated Successfully!');
     }
 
     /**
@@ -194,12 +191,20 @@ class FavouriteUrlController extends Controller
      */
     public function destroy($id)
     {
-         // if(Gate::denies('delete')) {
-         //       return abort('401');
-         //  } 
-         User::find($id)->delete();
+          $user = Auth::user();
 
-        return redirect()->back()->with('message', 'User Deleted Successfully!');
+           $url  = FavouriteUrl::where(['id' => $id, 'user_id' => $user->id]);
+          
+          $return = redirect()->back();
+          
+          if($url->exists()){
+           $url->delete();
+            $return = redirect()->back()->with('message', 'Favourite URL Deleted Successfully!');
+          }else{
+           $return = redirect()->back()->withErrors('URL Can`t be Deleted!');
+          }
+         
+          return $return;
     }
 
 

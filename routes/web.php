@@ -68,19 +68,18 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 
-
 // Favourite Routes
 Route::resource('favourites', App\Http\Controllers\FavouriteUrlController::class);
 Route::post('favourite',[ App\Http\Controllers\FavouriteUrlController::class,'getFavourite'])->name('get.favourite');
 
 
-Route::get('favourites',[ App\Http\Controllers\FavouriteUrlController::class,'favourites'])->name('favourites');
+// Route::get('favourites',[ App\Http\Controllers\FavouriteUrlController::class,'favourites'])->name('favourites');
 
-Route::get('make-favourite',[ App\Http\Controllers\FavouriteUrlController::class,'makeFavourite'])->name('make.favourite');
+// Route::get('make-favourite',[ App\Http\Controllers\FavouriteUrlController::class,'makeFavourite'])->name('make.favourite');
 
-Route::post('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'updateFavourite'])->name('update.favourite');
+// Route::post('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'updateFavourite'])->name('update.favourite');
 
-Route::delete('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'deleteFavourite'])->name('delete.favourite');
+// Route::delete('favourite/{id}',[ App\Http\Controllers\FavouriteUrlController::class,'deleteFavourite'])->name('delete.favourite');
 
 
 
