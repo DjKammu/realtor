@@ -166,4 +166,25 @@ class PropertyController extends Controller
 
         return redirect()->back()->with('message', 'Property Deleted Successfully!');
     }
+
+  public function quickAdd(Request $request)
+    {
+         if(Gate::denies('add')) {
+               return abort('401');
+        } 
+
+        $data = $request->except('_token');
+
+        $request->validate([
+              'name' => 'required|unique:properties'
+        ]);
+
+        $data['slug'] = \Str::slug($request->name);
+
+        Property::create($data);
+
+        return redirect()->back()->with('message', 'Property Added Successfully!');
+    }
+
+
 }

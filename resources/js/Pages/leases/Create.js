@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react'
 import DatePicker from "react-datepicker";
 import {Inertia} from '@inertiajs/inertia';
+import QuickAdd from '@/QuickAdd';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -171,12 +172,18 @@ let removeFormFields = (i) => {
                       <label className="block text-sm font-medium text-gray-700" htmlFor="property">
                         <span>Property</span>
                       </label>
+                      <div className="form-inline">
                       <Select
+                        className="w-3/4 float-left"
                         defaultValue={selectedOption}
                         onChange={handleSelectChange}
                         options={properties}
-                      />                   
+                      />    
+                      <QuickAdd url='/properties/quick-add' title='Property'/>               
                       </div>
+                      </div>
+
+
 
                     {/* suite_id */}
                     <div className="col-span-12 sm:col-span-12">

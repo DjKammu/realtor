@@ -33,6 +33,8 @@ Route::inertia('/setup', 'Setup')->middleware('auth');
 Route::resource('roles', App\Http\Controllers\RoleController::class)->middleware('can:add_users');
 Route::resource('users', App\Http\Controllers\UserController::class)->middleware('can:add_users');
 Route::resource('properties', App\Http\Controllers\PropertyController::class);
+Route::post('properties/quick-add', [App\Http\Controllers\PropertyController::class,
+    'quickAdd'])->name('properties.quick-add'); 
 Route::resource('showing-status', App\Http\Controllers\ShowingStatusController::class);
 Route::resource('leasing-status', App\Http\Controllers\LeasingStatusController::class);
 Route::resource('suites', App\Http\Controllers\SuiteController::class);
@@ -51,9 +53,9 @@ Route::resource('leases', App\Http\Controllers\LeaseController::class);
     'downloadPDF'])->name('download.tenant-prospects'); 
  Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
     'downloadPDF'])->name('download.leases');
-
  Route::get('leases-attachment/delete/{id}', [App\Http\Controllers\LeaseController::class,
     'deleteAttachment'])->name('leases.attachment.delete');
+
 
 
 // Profile Routes 
