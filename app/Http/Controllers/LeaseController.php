@@ -121,7 +121,7 @@ class LeaseController extends Controller
           })->when($status, function ($q) use 
            ($status) {$q->where('status',$status);
           })->when(request()->filled('showing_date'), function ($q) use 
-           ($showing_date) {$q->where('showing_date','>',$showing_date);
+           ($showing_date) {$q->where('showing_date','<',$showing_date);
           });
 
           $tenantSuit = @Suite::find($suite);

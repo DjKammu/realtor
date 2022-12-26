@@ -22,8 +22,7 @@ const Index = (props) => {
       const selectedStatusOption  =  statuses.filter(item =>
                item.value == status); 
 
-     const [showingDate, setShowingDate] = useState(new Date(showing_date));
-
+      const [showingDate, setShowingDate] = useState(new Date(showing_date));
 
       const [form, setForm] = useState({
               property:  property,
@@ -46,8 +45,6 @@ const Index = (props) => {
             onError: () => id.current.focus(),
           })
       }
-    
-    console.log(showing_date);
 
     const handleSubmit = e => {
               e.preventDefault()
