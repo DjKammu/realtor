@@ -258,7 +258,7 @@ const Edit = (props) => {
                     {/* tenant_name */}
                     <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="tenant_name">
-                        <span>Name</span>
+                        <span>Tenant</span>
                       </label>
                        
                        <Select

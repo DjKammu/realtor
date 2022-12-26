@@ -112,24 +112,17 @@ class LeaseController extends Controller
               return $leasingSt;
           });
 
-         $dateArr = Lease::$dateArr;
-         $date = request()->date;
+         $showing_date = request()->showing_date;
+         $showing_date =  request()->filled('showing_date') ? Carbon::parse(request()->showing_date)->format('Y-m-d') : Carbon::now()->format('Y-m-d'); 
          $property = request()->property;
-         $suite = request()->suite;
-         $shown_by = request()->shown_by;
-         $leasing_agent = request()->leasing_agent;
+         $status = request()->status;
          $leases = $leases->when($property, function ($q) use 
            ($property) {$q->where('property_id',$property);
-          })->when($suite, function ($q) use 
-           ($suite) {$q->where('suite_id',$suite);
-          })->when($shown_by, function ($q) use 
-           ($shown_by) {$q->where('shown_by_id',$shown_by);
-          })->when($leasing_agent, function ($q) use 
-           ($leasing_agent) {$q->where('leasing_agent_id',$leasing_agent);
-          })->when($date, function ($q) use 
-           ($date) {$q->where('date', '>', now()->subDays($date));
+          })->when($status, function ($q) use 
+           ($status) {$q->where('status',$status);
+          })->when(request()->filled('showing_date'), function ($q) use 
+           ($showing_date) {$q->where('showing_date','>',$showing_date);
           });
-     
 
           $tenantSuit = @Suite::find($suite);
 
@@ -166,11 +159,18 @@ class LeaseController extends Controller
             ->take(1),
             'tenant_use' => TenantUse::select('name')
             ->whereColumn('tenant_uses.id', 'leases.tenant_use')
-            ->take(1)
+            ->take(1),
         ])->orderBy($orderBy,$order)->paginate((new Lease())->perPage); 
-      
-         return Inertia::render('leases/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','leases','properties',
-          'users','showingStatus','leasingStatus','tenantSuit','suitesArr'));
+
+        $leases->data = @collect($leases->items())->filter(function($lease){
+              $lease->media = @$lease->getMediaPathWithExtension()['file'] ? [@$lease->getMediaPathWithExtension()] : @$lease->getMediaPathWithExtension();
+              return $lease;
+        });
+
+        $statuses = Lease::$statusArr;
+        
+
+         return Inertia::render('leases/Index',compact('property','leases','properties','status','statuses','showing_date'));
     }
 
     /**
@@ -185,10 +185,6 @@ class LeaseController extends Controller
         } 
           $properties = Property::orderBy('name')->get();
           $users      = User::whereNotIn('id',[1])->orderBy('name')->get();
-          $showingStatus = ShowingStatus::orderBy('name')->get();
-          $leasingStatus = LeasingStatus::orderBy('name')->get();
-          $tenantUses = TenantUse::orderBy('name')->get();
-          $realtors = Realtor::orderBy('name')->get();
           $tenants = Tenant::orderBy('name')->get();
 
           $properties = @$properties->filter(function($property){
@@ -196,42 +192,18 @@ class LeaseController extends Controller
               $property->value = $property->id;
               return $property;
           });
-          $users = @$users->filter(function($user){
-              $user->label = $user->name;
-              $user->value = $user->id;
-              return $user;
-          });
-          $showingStatus = @$showingStatus->filter(function($showingSt){
-              $showingSt->label = $showingSt->name;
-              $showingSt->value = $showingSt->id;
-              return $showingSt;
-          });
 
-          $leasingStatus = @$leasingStatus->filter(function($leasingSt){
-              $leasingSt->label = $leasingSt->name;
-              $leasingSt->value = $leasingSt->id;
-              return $leasingSt;
-          });
-
-          $tenantUses = @$tenantUses->filter(function($tenantU){
-              $tenantU->label = $tenantU->name;
-              $tenantU->value = $tenantU->id;
-              return $tenantU;
-          });
-          $realtors = @$realtors->filter(function($realtor){
-              $realtor->label = $realtor->name;
-              $realtor->value = $realtor->id;
-              return $realtor;
-          });
           $tenants = @$tenants->filter(function($tenant){
               $tenant->label = $tenant->name;
               $tenant->value = $tenant->id;
               return $tenant;
           });
 
+          $statuses = Lease::$statusArr;
 
-          return Inertia::render('leases/Create',compact('tenantUses','properties','users',
-            'showingStatus','leasingStatus','realtors','tenantUses','tenants'));
+
+          return Inertia::render('leases/Create',compact('properties'
+            ,'tenants','statuses'));
     }
 
     /**
@@ -339,9 +311,13 @@ class LeaseController extends Controller
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
 
+         $statuses = Lease::$statusArr;
+
          $lease->media =  @$lease->getMediaPathWithExtension()['file'] ? [@$lease->getMediaPathWithExtension()] : @$lease->getMediaPathWithExtension();
-         
-         return Inertia::render('leases/Edit',compact('realtors','tenantSuit','lease','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
+
+
+
+         return Inertia::render('leases/Edit',compact('statuses','tenantSuit','lease','properties','tenants'));
     }
 
     /**
@@ -388,12 +364,14 @@ class LeaseController extends Controller
 
              $files = array_column( $filesData,'file');
              $names = array_column( $filesData,'name');
+             $nick_names = array_column( $filesData,'nick_name');
 
              $request->merge(['attachements' =>$files ]);
+             $request->merge(['nick_names' =>  $nick_names]);
              $request->merge(['names' =>  $names]);
              
              $lease->docType(DocumentType::LEASE)->toPath(Lease::LEASE_PATH)
-                ->storeFile('attachements',true,'names');
+                ->storeFile('attachements',true,'names','nick_names');
         }
           
         return redirect('leases')->with('message', 'Lease Updated Successfully!');

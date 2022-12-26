@@ -12,6 +12,9 @@ class Lease extends Model
 
     CONST LEASE_PATH  = 'lease_attachments';
 
+    CONST ACTIVE  = 'active';
+    CONST INACTIVE  = 'inactive';
+
     protected $fillable = [
         'date', 'showing_date', 'property_id', 'suite_id',
         'tenant_name', 'tenant_use', 'showing_status_id', 
@@ -27,6 +30,33 @@ class Lease extends Model
     public function property(){
       return $this->belongsTo(Property::class);
     }
+   
+    public static $statusArr = [
+      [
+         'label' => self::ACTIVE,
+         'value' => self::ACTIVE
+      ],
+      [
+         'label' => self::INACTIVE,
+         'value' => self::INACTIVE
+      ]
+    ];
+
+    public function media(){
+      return;
+      //return $this->hasMany(\DB::table('media'),'model_id','id');
+    }
+     
+    public function scopeMedia($query)
+    {
+          $query->addSelect(['media' =>  \DB::table('media')->select('id')
+             ->where(['model_type' => get_class($this),
+                'model_id' => 'leases.id'])
+            ->take(1)
+
+          ]);
+    }
+       
 
     public static $dateArr = [
       ['label' => 'Select Date' , 'value' => null],

@@ -9,24 +9,14 @@ const Edit = (props) => {
 
   const errors = usePage().props.errors;
 
-  const { realtors, tenantUses, tenants, tenantSuit, lease, properties, users, showingStatus, leasingStatus } = usePage().props;
+  const { realtors, tenantUses, tenants, tenantSuit, lease, properties, users, showingStatus, leasingStatus,statuses } = usePage().props;
 
   const selectedOption  =  properties.filter(item =>
                item.value == lease.property_id); 
-  const selectedLeasingOption  =  leasingStatus.filter(item =>
-               item.value == lease.leasing_status_id); 
-  const selectedShowingOption  =  showingStatus.filter(item =>
-               item.value == lease.showing_status_id); 
-  const selectedShownByOption  =  users.filter(item =>
-               item.value == lease.shown_by_id); 
-  const selectedLeasingAgentOption  =  users.filter(item =>
-               item.value == lease.leasing_agent_id); 
   const selectedTenantNameOption  =  tenants.filter(item =>
                item.value == lease.tenant_name); 
-  const selectedTenantUseOption  =  tenantUses.filter(item =>
-               item.value == lease.tenant_use); 
-  const selectedRealtorOption  =  realtors.filter(item =>
-               item.value == lease.realtor_id); 
+  const selectedStatusOption  =  statuses.filter(item =>
+               item.value == lease.status); 
 
   const [selectedSuiteOption, setSelectedSuiteOption]  = useState(tenantSuit);
 
@@ -34,20 +24,15 @@ const Edit = (props) => {
   const [showingDate, setShowingDate] = useState(new Date(lease.showing_date));
   const [suites, setSuites] = useState([]);
 
-  const [fileValues, setFileValues] = useState([{ name: "", file : ""}])
+  const [fileValues, setFileValues] = useState([{ name: "", nick_name: "", file : ""}])
 
   const [form, setForm] = useState({
       date: lease.date,
       showing_date: lease.showing_date,
       property_id:  lease.property_id,
       suite_id: lease.suite_id,
-      showing_status_id:  lease.showing_status_id,
-      leasing_status_id:  lease.leasing_status_id,
-      leasing_agent_id:   lease.leasing_agent_id,
-      realtor_id:    lease.realtor_id,
-      shown_by_id:   lease.shown_by_id,
       tenant_name:   lease.tenant_name,
-      tenant_use:    lease.tenant_use,
+      status:    lease.status,
       file:     lease.file,
       media:    lease.media,
       notes:    lease.notes
@@ -74,16 +59,11 @@ const Edit = (props) => {
       Inertia.post('/leases/'+lease.id, {
           _method: 'put',
           date: form.date,
-          showing_date: form.showing_date,
+           showing_date: form.showing_date,
           property_id: form.property_id,
           suite_id: form.suite_id,
-          showing_status_id: form.showing_status_id,
-          leasing_status_id: form.leasing_status_id,
-          shown_by_id: form.shown_by_id,
-          leasing_agent_id: form.leasing_agent_id,
-          realtor_id: form.realtor_id,
           tenant_name: form.tenant_name,
-          tenant_use: form.tenant_use,
+          status: form.status,
           file: form.file,
           notes: form.notes,
           files: form.files
@@ -136,34 +116,6 @@ const Edit = (props) => {
      setSelectedSuiteOption(option);
   }
 
-  const handleSelectShowingChange = (option) => {
-     setForm(form => ({
-          ...form,
-          showing_status_id: option.value
-      }));
-  }
-
-  const handleSelectLeasingChange = (option) => {
-     setForm(form => ({
-          ...form,
-          leasing_status_id: option.value
-      }));
-  } 
-
-  const handleSelectShownByChange = (option) => {
-     setForm(form => ({
-          ...form,
-          shown_by_id: option.value
-      }));
-  }
-
-  const handleSelectLeasingAgentChange = (option) => {
-     setForm(form => ({
-          ...form,
-          leasing_agent_id: option.value
-      }));
-  }
-
   const handleDateChange = (date) => {
     setStartDate(date);
      setForm(form => ({
@@ -187,30 +139,23 @@ const Edit = (props) => {
       }));
   }
 
- const handleSelectTenantUseChange = (option) => {
-     setForm(form => ({
-          ...form,
-          tenant_use: option.value
-      }));
-  }
-
- const handleSelectRealtorChange = (option) => {
-     setForm(form => ({
-          ...form,
-          realtor_id: option.value
-      }));
-  } 
-
-  const handleFileChange = (i, e) => {
+const handleFileChange = (i, e) => {
     let newFileValues = [...fileValues];
-    newFileValues[i][e.target.name] = (e.target.name == 'name') ? e.target.value : e.target.files[0] ;
+    newFileValues[i][e.target.name] = (e.target.name == 'name' || e.target.name == 'nick_name' ) ? e.target.value : e.target.files[0] ;
     setFileValues(newFileValues);
     setForm(form => ({
           ...form,
           files:  [...fileValues]
     }));
  }
-    
+   
+ const handleSelectStatusChange = (option) => {
+     setForm(form => ({
+          ...form,
+          status: option.value
+      }));
+  }
+
 let addFormFields = () => {
     setFileValues([...fileValues, { name: "", file: "" }])
  }
@@ -245,23 +190,7 @@ let removeFormFields = (i) => {
                 <div className="px-4 py-5 bg-white shadow sm:p-6 sm:rounded-tl-md sm:rounded-tr-md">
                   <div className="grid grid-cols-6 gap-6">
                    
-                    {/* date */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="date">
-                        <span>Date</span>
-                      </label>
-                       <DatePicker selected={startDate} onChange={handleDateChange} />                 
-                      </div>  
-
-                    {/* showing_date */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="showing_date">
-                        <span>Showing Date</span>
-                      </label>
-                       <DatePicker selected={showingDate} onChange={handleShowingDateChange} />                 
-                      </div>
-
-                    {/* property */}
+                  {/* property */}
                     <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="property">
                         <span>Property</span>
@@ -285,10 +214,10 @@ let removeFormFields = (i) => {
                       />                   
                       </div>
 
-                    {/* tenant_name */}
+                     {/* tenant_name */}
                     <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="tenant_name">
-                        <span>Name</span>
+                        <span>Tenant</span>
                       </label>
                        
                        <Select
@@ -299,80 +228,33 @@ let removeFormFields = (i) => {
 
                    
                     </div>
-
-                  {/* tenant_use */}
+                   
+                    {/* date */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="tenant_use">
-                        <span>Tenant Use</span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="date">
+                        <span>Start Date</span>
                       </label>
+                       <DatePicker selected={startDate} onChange={handleDateChange} />                 
+                      </div>  
 
-                     <Select
-                        defaultValue={selectedTenantUseOption}
-                        onChange={handleSelectTenantUseChange}
-                        options={tenantUses}
-                      />  
-
-                    </div> 
-
-                  {/* realtor_id */}
+                    {/* showing_date */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="realtor_id">
-                        <span>Realtor</span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="showing_date">
+                        <span>End Date</span>
                       </label>
-
-                     <Select
-                        defaultValue={selectedRealtorOption}
-                        onChange={handleSelectRealtorChange}
-                        options={realtors}
-                      />  
-
-                    </div> 
-                    
-                    {/* showing_status_id */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="showing_status_id">
-                        <span>Showing Status </span>
-                      </label>
-                      <Select
-                        defaultValue={selectedShowingOption}
-                        onChange={handleSelectShowingChange}
-                        options={showingStatus}
-                      />                   
-                      </div> 
-
-                    {/* leasing_status_id */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="leasing_status_id">
-                        <span>Leasing Status </span>
-                      </label>
-                      <Select
-                        defaultValue={selectedLeasingOption}
-                        onChange={handleSelectLeasingChange}
-                        options={leasingStatus}
-                      />                   
+                       <DatePicker selected={showingDate} onChange={handleShowingDateChange} />                 
                       </div>
-                      
-                       {/* shown_by_id */}
-                    <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="shown_by_id">
-                        <span>Showing By </span>
-                      </label>
-                      <Select
-                        defaultValue={selectedShownByOption}
-                        onChange={handleSelectShownByChange}
-                        options={users}
-                      />                   
-                      </div> 
 
-                       {/* leasing_agent_id */}
+                   
+                       {/* status */}
                     <div className="col-span-12 sm:col-span-12">
-                      <label className="block text-sm font-medium text-gray-700" htmlFor="leasing_agent_id">
-                        <span>QPM Leasing Agent </span>
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="status">
+                        <span>Status </span>
                       </label>
                       <Select
-                        defaultValue={selectedLeasingAgentOption}
-                        onChange={handleSelectLeasingAgentChange}
-                        options={users}
+                        defaultValue={selectedStatusOption}
+                        onChange={handleSelectStatusChange}
+                        options={statuses}
                       />                   
                       </div>
 
@@ -399,10 +281,13 @@ let removeFormFields = (i) => {
                    {fileValues.map((element, index) => (
                     <div className="form-inline" key={index}>
                      
-                      <input className="w-2/5 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      <input className="w-1/2 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
                       placeholder="File Name" type="text" name="name" value={element.name || ""} onChange={e => handleFileChange(index, e)} />
                      
-                      <input type="file" className="w-1/2 px-3" name="file"  onChange={e => handleFileChange(index, e)} />
+                     <input className="w-1/2 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      placeholder="File Nick Name" type="text" name="nick_name" value={element.nick_name || ""} onChange={e => handleFileChange(index, e)} />
+                     
+                      <input type="file" className="w-10/12 px-3 py-2" name="file"  onChange={e => handleFileChange(index, e)} />
                       {
                         index ? 
                           <button type="button"  className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 remove" onClick={() => removeFormFields(index)}>X</button> 
@@ -442,7 +327,8 @@ let removeFormFields = (i) => {
                        {form.media && form.media.length > 0 && 
                        
                        form.media.map((element, index) => (
-                         <a className="delete-file" href={element.file} target="_new" >
+                         <a key={index} className="delete-file" href={element.file} target="_new" >
+                         <span className="text-xs"> {element.nick_name} </span> 
                            <img src={`/images/${element.ext}.png`} />
                            <span className="cross">
                              <form onSubmit={deleteFunc} id={element.file}>

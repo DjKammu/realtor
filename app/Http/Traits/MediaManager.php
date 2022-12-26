@@ -9,29 +9,34 @@ use DB;
 
 trait MediaManager {
      
-    public function storeFile($input, $multiple = false, $nameInput = null){
+    public function storeFile($input, $multiple = false, $nameInput = null,$nickNameInput = null){
     	 $fileArr = request()->{$input};
        $nameArr = request()->{$nameInput};
+       $nickNameArr = request()->{$nickNameInput};
       
     	 if(!$multiple){
     	 	$mimeType =  $fileArr->getClientMimeType();
     	 	$name = ($nameArr) ?  $nameArr : @pathinfo($fileArr)['filename'].'_'.time();
+        $nick_name = ($nickNameInput) ?  $nickNameInput : $name;
     	 	$fileName = $this->uniqueFilename(\Str::slug($name).'.'. $fileArr->getClientOriginalExtension());
     	      $fileArr->storeAs($this->path, $fileName, 'media');
             $this->fileName = $fileName; 
             $this->mimeType = $mimeType; 
             $this->name = $name; 
+            $this->nick_name = $nick_name; 
     	      $this->saveMedia();
     	 }else{
 
         foreach ($fileArr as $key => $file) {
           $mimeType =  $file->getClientMimeType();
           $name = (@$nameArr[$key]) ?  $nameArr[$key] : @pathinfo($file)['filename'].'_'.time();
+          $nick_name = (@$nickNameArr[$key]) ?  $nickNameArr[$key] : $name ;
           $fileName = $this->uniqueFilename(\Str::slug($name).'.'. $file->getClientOriginalExtension());
               $file->storeAs($this->path, $fileName, 'media');
               $this->fileName = $fileName; 
               $this->mimeType = $mimeType; 
               $this->name = $name; 
+              $this->nick_name = $nick_name; 
               $this->saveMedia();
         }
        }
@@ -55,6 +60,7 @@ trait MediaManager {
         $data['file_name']  = $this->fileName;
         $data['mime_type']  = $this->mimeType;
         $data['doc_type']   = $this->docType;
+        $data['nick_name']  = $this->nick_name;
         $data['name'] = $this->name;
         $data['path'] = $this->path;
         DB::table('media')->insert($data);
@@ -118,8 +124,10 @@ trait MediaManager {
       if($extesion){
          return [
                'file' => ($file) ?  asset($file->path.'/'.$file->file_name) : null ,
-               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null
-              ];
+               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null,
+               'name' => ($file) ?  @$file->name  : null,
+               'nick_name' => ($file && @$file->nick_name) ? @$file->nick_name : @$file->name               
+             ];
       }
 
     	return ($file) ?  asset($file->path.'/'.$file->file_name) : null;
@@ -129,9 +137,11 @@ trait MediaManager {
 
       if($extesion){
          return [
-               'file' => ($file) ?  public_path($file->path.'/'.$file->file_name) : null ,
-               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null
-              ];
+               'file' => ($file) ?  asset($file->path.'/'.$file->file_name) : null ,
+               'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null,
+               'name' => ($file) ?  @$file->name  : null,
+               'nick_name' => ($file && @$file->nick_name) ? @$file->nick_name : @$file->name               
+             ];
       }
 
       return ($file) ?  public_path($file->path.'/'.$file->file_name) : null;

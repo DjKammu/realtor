@@ -6,37 +6,29 @@ import { sortOrderBy } from '@/hooks/constants';
 import Pagination from '@/Pagination';
 import Favourite from '@/Favourite';
 import Select from 'react-select';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Index = (props) => {
       
-      let { suitesArr , tenantSuit, date, property, suite, shown_by, leasing_agent, leases, properties, users, showingStatus, leasingStatus, dateArr } = usePage().props  
+      let { statuses, status , showing_date, property, leases, properties} = usePage().props  
       
       let propertyNullArr = [{'label' : 'Select Property' , 'value' : null}];
-      let shownByNullArr = [{'label' : 'Select Shown By' , 'value' : null}];
-      let leasingAgentNullArr = [{'label' : 'Select Leasing Agent' , 'value' : null}];
-      let suitNullArr = [{'label' : 'Select Suite' , 'value' : null}];
+      let statusNullArr = [{'label' : 'Select Stattus' , 'value' : null}];
 
       const selectedOption  =  properties.filter(item =>
                item.value == property); 
 
-      const selectedDateOption = dateArr.filter(item =>
-               item.value == date); 
-      const [selectedSuiteOption, setSelectedSuiteOption]  = useState(tenantSuit);
+      const selectedStatusOption  =  statuses.filter(item =>
+               item.value == status); 
 
-     const selectedShownByOption  =  users.filter(item =>
-               item.value == shown_by); 
-     const selectedLeasingAgentOption  =  users.filter(item =>
-               item.value == leasing_agent); 
+     const [showingDate, setShowingDate] = useState(new Date(showing_date));
 
-
-      const [suites, setSuites] = useState((suitesArr.length > 0) ? [...suitNullArr, ...suitesArr] : []);
 
       const [form, setForm] = useState({
-              date: date,
               property:  property,
-              suite: suite,
-              shown_by: shown_by,
-              leasing_agent: leasing_agent
+              status: status,
+              showing_date: showing_date
             })
 
       const deleteFunc = (e) => {
@@ -54,17 +46,15 @@ const Index = (props) => {
             onError: () => id.current.focus(),
           })
       }
-
+    
+    console.log(showing_date);
 
     const handleSubmit = e => {
               e.preventDefault()
-
               Inertia.get('/leases', {
-                  date: form.date,
+                  showing_date: form.showing_date,
                   property: form.property,
-                  suite: form.suite,
-                  shown_by: form.shown_by,
-                  leasing_agent: form.leasing_agent
+                  status: form.status
               })
 
     }
@@ -74,28 +64,28 @@ const Index = (props) => {
          setForm(form => ({
               ...form,
               property: selectedOption.value,
-              suite_id   : null
+              // suite_id   : null
           }));
 
-          setSelectedSuiteOption([]);
-          setSuites([]);
+         //  setSelectedSuiteOption([]);
+         //  setSuites([]);
         
-         axios({
-            url: '/get-suites/?id='+selectedOption.value,
-            headers: {
-              'Content-Type': 'text/html'
-            }
-          })
-          .then(response => {
-            // ? returns undefined if variable is undefined
-            // if( response.data?.errors?.length ) this.setState({errors: response.data.errors})
+         // axios({
+         //    url: '/get-suites/?id='+selectedOption.value,
+         //    headers: {
+         //      'Content-Type': 'text/html'
+         //    }
+         //  })
+         //  .then(response => {
+         //    // ? returns undefined if variable is undefined
+         //    // if( response.data?.errors?.length ) this.setState({errors: response.data.errors})
               
-            if(response.data.data.length) { setSuites([...suitNullArr,...response.data.data]) }
-          })
-          .catch(response => {
-            console.log(response)
-            this.setState({errors: ['Try it again later please.']})
-          });
+         //    if(response.data.data.length) { setSuites([...suitNullArr,...response.data.data]) }
+         //  })
+         //  .catch(response => {
+         //    console.log(response)
+         //    this.setState({errors: ['Try it again later please.']})
+         //  });
 
       } 
 
@@ -108,28 +98,6 @@ const Index = (props) => {
       }));
     }
 
-  const handleSelectSuitChange = (option) => {
-     setForm(form => ({
-          ...form,
-          suite: option.value
-      }));
-     setSelectedSuiteOption(option);
-  }
-      
-  const handleSelectShownByChange = (option) => {
-     setForm(form => ({
-          ...form,
-          shown_by: option.value
-      }));
-  }
-
-  const handleSelectLeasingAgentChange = (option) => {
-     setForm(form => ({
-          ...form,
-          leasing_agent: option.value
-      }));
-  }
-
   const handleSelectDateChange = (option) => {
      setForm(form => ({
           ...form,
@@ -137,6 +105,24 @@ const Index = (props) => {
       }));
 
   }
+
+  const handleShowingDateChange = (date) => {
+     setShowingDate(date);
+
+     console.log(date);
+     setForm(form => ({
+          ...form,
+          showing_date: date
+      }));
+  }
+
+   const handleSelectStatusChange = (option) => {
+     setForm(form => ({
+          ...form,
+          status: option.value
+      }));
+  }
+
 
 
     return (
@@ -155,37 +141,27 @@ const Index = (props) => {
 
                             </div>
                              <div className="flex items-center">
-                                       <Select 
-                                            placeholder="Select Date"
-                                            defaultValue={selectedDateOption}
-                                            onChange={handleSelectDateChange}
-                                            options={dateArr}
-                                        /> 
-                                        <Select 
-                                            placeholder="Select Property"
-                                            defaultValue={selectedOption}
-                                            onChange={handleSelectChange}
-                                            options={ (properties.length > 0) ? [...propertyNullArr, ...properties] : []}
-                                        /> 
-                                        <Select
-                                        placeholder="Select Suite"
-                                        value={selectedSuiteOption}
-                                        onChange={handleSelectSuitChange}
-                                        options={suites}
-                                        />  
-                                        <Select
-                                        placeholder="Select Shown By"
-                                        defaultValue={selectedShownByOption}
-                                        onChange={handleSelectShownByChange}
-                                        options={(users.length > 0) ? [...shownByNullArr, ...users] : []}
-                                        />  
 
-                                        <Select
-                                        placeholder="Select Leasing Agent"
-                                        defaultValue={selectedLeasingAgentOption}
-                                        onChange={handleSelectLeasingAgentChange}
-                                        options={(users.length > 0) ? [...leasingAgentNullArr, ...users] : []}
-                                        />  
+                             <div className="col-span-12 sm:col-span-12">
+                              
+                                  <DatePicker dateFormat="MM/dd/yyyy" className="px-4 py-2" selected={showingDate} onChange={handleShowingDateChange} />                  
+                              </div>  
+
+                                    
+                                <Select 
+                                    placeholder="Select Property"
+                                    defaultValue={selectedOption}
+                                    onChange={handleSelectChange}
+                                    options={ (properties.length > 0) ? [...propertyNullArr, ...properties] : []}
+                                /> 
+
+                                <Select
+                                    defaultValue={selectedStatusOption}
+                                    onChange={handleSelectStatusChange}
+                                    options={ (statuses.length > 0) ? [...statusNullArr, ...statuses] : []}
+                                  /> 
+                                      
+                                         
                                    <div className="flex border border-purple-200 rounded">
                                     
                                     <button onClick={handleSubmit} className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
@@ -206,18 +182,7 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2">Date
-                                                 <i onClick={sortOrderBy('date', 'asc')} 
-                                                className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('date', 'desc')}  
-                                                className="fa fa-sort-desc"></i>
-                                                </th>
-                                                <th className="px-4 py-2">SD
-                                                 <i onClick={sortOrderBy('showing_date', 'asc')} 
-                                                className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('showing_date', 'desc')}  
-                                                className="fa fa-sort-desc"></i>
-                                                </th>
+                                               
                                                 <th className="px-4 py-2">Property
                                                  <i onClick={sortOrderBy('property_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
@@ -230,30 +195,25 @@ const Index = (props) => {
                                                 <i onClick={sortOrderBy('suite_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">TN
+                                                <th className="px-4 py-2">Tenant
                                                  <i onClick={sortOrderBy('tenant_name', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('tenant_name', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">TU                                                 <i onClick={sortOrderBy('tenant_use', 'asc')} 
+
+                                                 <th className="px-4 py-2">Start Date
+                                                 <i onClick={sortOrderBy('date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('tenant_use', 'desc')}  
-                                                className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">SB
-                                                 <i onClick={sortOrderBy('shown_by_id', 'asc')} 
+                                                <i onClick={sortOrderBy('date', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
+                                                </th>
+                                                <th className="px-4 py-2">End Date
+                                                 <i onClick={sortOrderBy('showing_date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('shown_by_id', 'desc')}  
-                                                className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">LA
-                                                 <i onClick={sortOrderBy('leasing_agent_id', 'asc')} 
-                                                className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('leasing_agent_id', 'desc')}  
-                                                className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">Realtor
-                                                 <i onClick={sortOrderBy('realtor_id', 'asc')} 
-                                                className="fa fa-sort-asc"></i>
-                                                <i onClick={sortOrderBy('realtor_id', 'desc')}  
-                                                className="fa fa-sort-desc"></i></th>
+                                                <i onClick={sortOrderBy('showing_date', 'desc')}  
+                                                className="fa fa-sort-desc"></i>
+                                                </th>
+                                                <th className="px-4 py-2">Attachments</th>
                                                 <th className="px-4 py-2">Notes</th>
                                               
                                                 <th className="px-4 py-2">Edit</th>
@@ -264,15 +224,21 @@ const Index = (props) => {
                                         <tbody>
                                             {leases.data.map((lease,key) => (
                                                 <tr key={key}>
-                                                    <td className="border px-4 py-2">{ lease.date }</td>
-                                                    <td className="border px-4 py-2">{ lease.showing_date }</td>
                                                     <td className="border px-4 py-2">{ lease.property }</td>
                                                     <td className="border px-4 py-2">{ lease.suite }</td>
                                                     <td className="border px-4 py-2">{ lease.tenant_name }</td>
-                                                    <td className="border px-4 py-2">{ lease.tenant_use }</td>
-                                                    <td className="border px-4 py-2">{ lease.shown_by }</td>
-                                                    <td className="border px-4 py-2">{ lease.leasing_agent }</td>
-                                                    <td className="border px-4 py-2">{ lease.realtor }</td>
+                                                    <td className="border px-4 py-2">{ lease.date }</td>
+                                                    <td className="border px-4 py-2">{ lease.showing_date }</td>
+                                                    <td className="border px-4 py-2">
+
+                    {lease.media && lease.media.length > 0 && 
+                       lease.media.map((element, index) => (
+                         <a className="attachments-files" key={index} href={element.file} target="_new" >
+                         <span className="text-xs"> {element.nick_name} </span> 
+                           <img src={`/images/${element.ext}.png`} />
+                         </a>
+                      ))
+                    }</td>
                                                     <td className="border px-4 py-2">{ lease.notes }</td>
                                                     <td className="border px-4 py-2">        
                                                         <InertiaLink href={`/leases/${lease.id}`} >
