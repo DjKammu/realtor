@@ -26,8 +26,7 @@ const Index = (props) => {
 
       const [form, setForm] = useState({
               property:  property,
-              status: status,
-              showing_date: showing_date
+              status: status
             })
 
       const deleteFunc = (e) => {
