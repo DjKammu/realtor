@@ -183,7 +183,7 @@ trait MediaManager {
         }
     
     	$this->docType = $docType;
-       return $this;
+      return $this;
 
     }
 

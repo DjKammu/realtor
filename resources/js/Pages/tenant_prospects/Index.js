@@ -206,58 +206,57 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                                <th className="px-4 py-2">Date
+                                                <th className=" py-2">Date
                                                  <i onClick={sortOrderBy('date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('date', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">SD
+                                                <th className=" py-2">SD
                                                  <i onClick={sortOrderBy('showing_date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('showing_date', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Property
+                                                <th className=" py-2">Property
                                                  <i onClick={sortOrderBy('property_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('property_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">Suite
+                                                <th className=" py-2">Suite
                                                  <i onClick={sortOrderBy('suite_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('suite_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className="px-4 py-2">TN
+                                                <th className=" py-2">Tenant
                                                  <i onClick={sortOrderBy('tenant_name', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('tenant_name', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">TU                                                 <i onClick={sortOrderBy('tenant_use', 'asc')} 
+                                                <th className=" py-2">Tenant Use                                                 <i onClick={sortOrderBy('tenant_use', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('tenant_use', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">SB
+                                                <th className=" py-2">Showing By
                                                  <i onClick={sortOrderBy('shown_by_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('shown_by_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">LA
+                                                <th className=" py-2">Leasing Agent
                                                  <i onClick={sortOrderBy('leasing_agent_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('leasing_agent_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">Realtor
+                                                <th className=" py-2">Realtor
                                                  <i onClick={sortOrderBy('realtor_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('realtor_id', 'desc')}  
                                                 className="fa fa-sort-desc"></i></th>
-                                                <th className="px-4 py-2">Notes</th>
+                                                <th className=" py-2">Notes</th>
                                               
-                                                <th className="px-4 py-2">Edit</th>
-                                                <th className="px-4 py-2">Delete</th>
+                                                <th className=" py-2">Action</th>
 
                                             </tr>
                                         </thead>
@@ -275,11 +274,9 @@ const Index = (props) => {
                                                     <td className="border px-4 py-2">{ tenantPro.realtor }</td>
                                                     <td className="border px-4 py-2">{ tenantPro.notes }</td>
                                                     <td className="border px-4 py-2">        
-                                                        <InertiaLink href={`/tenant-prospects/${tenantPro.id}`} >
+                                                        <InertiaLink className="float-left"  href={`/tenant-prospects/${tenantPro.id}`} >
                                                         <i className="fa fa-edit text-success"></i>
                                                         </InertiaLink> 
-                                                      </td>
-                                                      <td className="border px-4 py-2">
                                                         <form onSubmit={deleteFunc} id={tenantPro.id}>
                                                               <button
                                                                 className="flex items-center px-3 py-1 text-sm font-medium text-indigo-500 hover:text-indigo-600"

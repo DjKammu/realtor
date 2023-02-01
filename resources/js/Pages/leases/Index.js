@@ -137,14 +137,7 @@ const Index = (props) => {
                             </InertiaLink>
 
                             </div>
-                             <div className="flex items-center">
-
-                             <div className="col-span-12 sm:col-span-12">
-                              
-                                  <DatePicker dateFormat="MM/dd/yyyy" className="px-4 py-2" selected={showingDate} onChange={handleShowingDateChange} />                  
-                              </div>  
-
-                                    
+                             <div className="flex items-center">    
                                 <Select 
                                     placeholder="Select Property"
                                     defaultValue={selectedOption}
@@ -213,8 +206,7 @@ const Index = (props) => {
                                                 <th className="px-4 py-2">Attachments</th>
                                                 <th className="px-4 py-2">Notes</th>
                                               
-                                                <th className="px-4 py-2">Edit</th>
-                                                <th className="px-4 py-2">Delete</th>
+                                                <th className="px-4 py-2">Action</th>
 
                                             </tr>
                                         </thead>
@@ -238,11 +230,9 @@ const Index = (props) => {
                     }</td>
                                                     <td className="border px-4 py-2">{ lease.notes }</td>
                                                     <td className="border px-4 py-2">        
-                                                        <InertiaLink href={`/leases/${lease.id}`} >
+                                                        <InertiaLink  className="float-left" href={`/leases/${lease.id}`} >
                                                         <i className="fa fa-edit text-success"></i>
                                                         </InertiaLink> 
-                                                      </td>
-                                                      <td className="border px-4 py-2">
                                                         <form onSubmit={deleteFunc} id={lease.id}>
                                                               <button
                                                                 className="flex items-center px-3 py-1 text-sm font-medium text-indigo-500 hover:text-indigo-600"

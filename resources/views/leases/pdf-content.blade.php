@@ -21,7 +21,7 @@
               
                <td> {{ @$lease->suite->name }}</td>
                <td> {{ @$lease->property->name }}</td>
-               <td> {{ @$lease->tenant_name }}</td>
+               <td> {{ @$lease->tenant->name }}</td>
                 <td> {{ @$lease->date }}</td>
                <td> {{ @$lease->showing_date }}</td>
                <td> {{ @$lease->notes }}</td>

@@ -19,7 +19,7 @@ class Lease extends Model
         'date', 'showing_date', 'property_id', 'suite_id',
         'tenant_name', 'tenant_use', 'showing_status_id', 
         'leasing_status_id','shown_by_id', 
-        'leasing_agent_id', 'notes','realtor_id'
+        'leasing_agent_id', 'notes','realtor_id','status'
     ];
 
 
@@ -29,6 +29,10 @@ class Lease extends Model
 
     public function property(){
       return $this->belongsTo(Property::class);
+    }
+
+    public function tenant(){
+      return $this->belongsTo(Tenant::class,'tenant_name');
     }
    
     public static $statusArr = [

@@ -327,6 +327,7 @@ class TenantProspectController extends Controller
                 $tenantSuit->label = ($tenantSuit) ? @$tenantSuit->name : '';
                 $tenantSuit->value = ($tenantSuit) ? @$tenantSuit->id : '';
           }
+          
           $tenantProspect->media = (@$tenantProspect) ?  @$tenantProspect->getMediaPathWithExtension() : null;
               
          return Inertia::render('tenant_prospects/Edit',compact('realtors','tenantSuit','tenantProspect','properties','users','showingStatus','leasingStatus','tenantUses','tenants'));
