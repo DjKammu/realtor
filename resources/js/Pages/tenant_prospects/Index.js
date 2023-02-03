@@ -212,7 +212,7 @@ const Index = (props) => {
                                                 <i onClick={sortOrderBy('date', 'desc')}  
                                                 className="fa fa-sort-desc"></i>
                                                 </th>
-                                                <th className=" py-2">SD
+                                                <th className=" py-2">Showing Date
                                                  <i onClick={sortOrderBy('showing_date', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
                                                 <i onClick={sortOrderBy('showing_date', 'desc')}  

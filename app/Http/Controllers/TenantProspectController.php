@@ -145,7 +145,10 @@ class TenantProspectController extends Controller
               return $suite;
           });
 
-         $tenantProspects = $tenantProspects->addSelect(['property' => Property::select('name')
+         $tenantProspects = $tenantProspects->select("tenant_prospects.*",
+           \DB::raw("DATE_FORMAT(tenant_prospects.date, '%m/%d/%Y') as date"),
+           \DB::raw("DATE_FORMAT(tenant_prospects.showing_date, '%m/%d/%Y') as showing_date"))
+            ->addSelect(['property' => Property::select('name')
             ->whereColumn('properties.id', 'tenant_prospects.property_id')
             ->take(1),
             'suite' => Suite::select('name')
@@ -167,7 +170,7 @@ class TenantProspectController extends Controller
             ->whereColumn('tenant_uses.id', 'tenant_prospects.tenant_use')
             ->take(1)
         ])->orderBy($orderBy,$order)->paginate((new TenantProspect())->perPage); 
-      
+
          return Inertia::render('tenant_prospects/Index',compact('date','property','suite','shown_by','leasing_agent','dateArr','tenantProspects','properties',
           'users','showingStatus','leasingStatus','tenantSuit','suitesArr'));
     }

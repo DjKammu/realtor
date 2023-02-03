@@ -20,4 +20,6 @@ class Tenant extends Model
       return $this->belongsTo(TenantUse::class);
     }
 
+   
+
 }

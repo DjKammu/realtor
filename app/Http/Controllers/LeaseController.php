@@ -139,7 +139,10 @@ class LeaseController extends Controller
               return $suite;
           });
 
-         $leases = $leases->addSelect(['property' => Property::select('name')
+         $leases = $leases->select("leases.*",
+           \DB::raw("DATE_FORMAT(leases.date, '%m/%d/%Y') as date"),
+           \DB::raw("DATE_FORMAT(leases.showing_date, '%m/%d/%Y') as showing_date"))
+             ->addSelect(['property' => Property::select('name')
             ->whereColumn('properties.id', 'leases.property_id')
             ->take(1),
             'suite' => Suite::select('name')

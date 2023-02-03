@@ -55,7 +55,6 @@ class TenantController extends Controller
               return $tenantU;
           });
        
-
           $s = request()->s;
           
           $tenants = $tenants->when($s, function ($q) use 
