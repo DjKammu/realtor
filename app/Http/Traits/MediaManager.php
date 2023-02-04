@@ -162,6 +162,13 @@ trait MediaManager {
 
     }
 
+    public function updateFile($file = null,$update){
+       $where = ($file) ? ['file_name' => $file] : [];
+        $this->buildQuery($where)
+              ->update($update); 
+       return true; 
+    }
+
     public function toPath($path){
 
     	   if(!\File::exists(public_path().$path)) {

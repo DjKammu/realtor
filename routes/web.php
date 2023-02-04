@@ -54,7 +54,10 @@ Route::resource('leases', App\Http\Controllers\LeaseController::class);
  Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
     'downloadPDF'])->name('download.leases');
  Route::get('leases-attachment/delete/{id}', [App\Http\Controllers\LeaseController::class,
-    'deleteAttachment'])->name('leases.attachment.delete');
+    'deleteAttachment'])->name('leases.attachment.delete'); 
+
+ Route::post('leases-attachment/update/{id}', [App\Http\Controllers\LeaseController::class,
+    'updateAttachment'])->name('leases.attachment.update');
 
 
 

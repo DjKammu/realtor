@@ -27,7 +27,14 @@ span.cross{
     top: -12px;
     cursor: pointer;
 }
-.delete-file:hover span.cross{
+span.edit{
+     display:none; 
+     position: absolute;
+    top: -12px;
+    right: 10px;
+}
+.delete-file:hover span.cross,
+.delete-file:hover span.edit{
   display: block;
 }
 
@@ -43,4 +50,8 @@ span.cross{
 }
 .attachments-files img{
   width: 100%;
+}
+
+.delete-file img{
+  height: 25px;
 }

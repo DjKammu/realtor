@@ -414,7 +414,7 @@ class LeaseController extends Controller
    
     public function deleteAttachment($id){
 
-       $lease = Lease::find($id);
+         $lease = Lease::find($id);
 
          if(!$lease){
             return redirect()->back();
@@ -425,5 +425,41 @@ class LeaseController extends Controller
          $lease->deleteFile($file);
 
          return redirect()->back()->with('message', 'File Deleted Successfully!');
+    }
+
+    public function updateAttachment($id){
+
+         $lease = Lease::find($id);
+
+         if(!$lease){
+           return response()->json([
+                'error' => 'Lease not found',
+                'status' => 1
+            ]);
+         }
+
+        $validate = \Validator::make(request()->all(),[
+            'name' => 'required',
+            'nick_name' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'error' => $validate->errors()->first(),
+                'status' => 1
+            ]);
+        }
+       
+        $file = @end(explode('/', request()->file));
+
+        $lease->updateFile($file,request()->except('file'));
+
+        $lease->media =  @$lease->getMediaPathWithExtension()['file'] ? [@$lease->getMediaPathWithExtension()] : @$lease->getMediaPathWithExtension();
+
+        return response()->json([
+                'data' => [ 'media' => $lease->media],
+                'status' => 1
+        ]);
+
     }
 }

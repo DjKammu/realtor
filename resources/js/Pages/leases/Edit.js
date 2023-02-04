@@ -27,6 +27,8 @@ const Edit = (props) => {
 
   const [fileValues, setFileValues] = useState([{ name: "", nick_name: "", file : ""}])
 
+  const [formOpen, setFormOpen] = useState(false)
+
   const [form, setForm] = useState({
       date: lease.date,
       showing_date: lease.showing_date,
@@ -37,6 +39,12 @@ const Edit = (props) => {
       file:     lease.file,
       media:    lease.media,
       notes:    lease.notes
+    })  
+
+  const [edit, setEdit] = useState({
+      file     : '',
+      name     : '',
+      nick_name: ''
     })
 
     const deleteFunc = (e) => {
@@ -54,6 +62,58 @@ const Edit = (props) => {
             onError: () => id.current.focus(),
           })
       }
+
+    const editFunc = (e) => {
+        e.preventDefault()
+        setFormOpen(true)
+        setEdit(edit => ({
+          ...edit,
+          file     : e.target.id,
+          name     : e.target.getAttribute('name'),
+          nick_name: e.target.getAttribute('nick_name')
+      }));
+    }
+
+    const handleEditSubmit  = (e) => {
+         e.preventDefault()
+         
+       axios.post('/leases-attachment/update/'+lease.id,edit)
+      .then(response => {
+        // ? returns undefined if variable is undefined
+         if( response.data?.error  ) {
+            alert(response.data?.error);
+         }
+          
+         if(response.data?.data?.media?.length) { 
+            alert('File updated');
+            setForm(form => ({
+               ...form,
+               media : response.data.data.media
+            }));
+          }
+
+          setFormOpen(false)
+      })
+      .catch(response => {
+        console.log(response)
+        this.setState({errors: ['Try it again later please.']})
+      });
+
+       
+
+    }
+
+
+    const handleEditCancel  = (e) => {
+        e.preventDefault()
+        setFormOpen(false)
+        setEdit(edit => ({
+          ...edit,
+          file     : '',
+          name     : '',
+          nick_name: ''
+      }));
+    }
 
     const handleSubmit = e => {
       e.preventDefault()
@@ -76,6 +136,15 @@ const Edit = (props) => {
       const value = e.target.value;
       setForm(form => ({
           ...form,
+          [key]: value,
+      }));
+    }
+
+    const handleEditChange = e =>   {
+      const key = e.target.id;
+      const value = e.target.value;
+      setEdit(edit => ({
+          ...edit,
           [key]: value,
       }));
     }
@@ -321,7 +390,49 @@ let removeFormFields = (i) => {
               </form>
 
                {/* attached file */}
+               
+                {formOpen && 
+                     <div className="px-4 py-5 bg-white shadow sm:p-6 sm:rounded-tl-md sm:rounded-tr-md">
+
+                    <div className="col-span-12 sm:col-span-12">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="file">
+                        <span>Edit File</span>
+                      </label>
+
+                    </div>
+                   <div className="form-inline" >
+             
+                      <input className="w-1/2 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      placeholder="File Name" type="text" id="name" value={edit.name || ""} onChange={handleEditChange} />
+                     
+                     <input className="w-1/2 px-3 py-2 mt-1 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                      placeholder="File Nick Name" type="text" id="nick_name" value={edit.nick_name || ""} onChange={ handleEditChange} />
+          
+                    </div>
+
+
+                    <div className="flex items-center justify-end px-4 py-3 text-right border-t shadow sm:px-6 sm:rounded-bl-md sm:rounded-br-md">
+                        <button type="button"
+                          onClick={handleEditCancel}
+                          className="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700">
+                          cancel
+                        </button>
+
+                        <button type="submit"
+                          onClick={handleEditSubmit}
+                          className="inline-flex items-center px-4  mx-2 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 border border-transparent rounded-md hover:bg-gray-700">
+                          save
+                        </button>
+                    </div>
+
+
+               </div>
+                  
+                }
+                    
                <div className="px-4 py-5 bg-white shadow sm:p-6 sm:rounded-tl-md sm:rounded-tr-md">
+
+
                <div className="grid grid-cols-6 gap-6">
                    <div className="col-span-12 sm:col-span-12">
                       <label className="block text-sm font-medium text-gray-700" htmlFor="file">
@@ -329,13 +440,20 @@ let removeFormFields = (i) => {
                       </label>
 
                     </div>
+                       
                        {form.media && form.media.length > 0 && 
                        
                        form.media.map((element, index) => (
-                         <a key={index} className="delete-file" href={element.file} target="_new" >
-                         <span className="text-xs"> {element.nick_name} </span> 
+                         <a key={index} className="col-span-3 sm:col-span-3 delete-file" href={element.file} target="_new" >
+                           <span className="text-xs"> {element.nick_name} </span> 
                            <img src={`/images/${element.ext}.png`} />
-                           <span className="cross">
+                            <span className="text-xs"> {element.name} </span> 
+                            <span className="edit" onClick={editFunc}><i 
+                              id={element.file}
+                              name={element.name}
+                              nick_name={element.nick_name}
+                              className="fa fa-edit"></i></span>
+                            <span className="cross">
                              <form onSubmit={deleteFunc} id={element.file}>
                                     <button
                                       className="text-gray-800"
@@ -358,6 +476,5 @@ let removeFormFields = (i) => {
         </div>
     )
 }
-
 
 export default Edit;
