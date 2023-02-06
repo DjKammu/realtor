@@ -49,15 +49,18 @@ Route::resource('realtors', App\Http\Controllers\RealtorController::class);
 // Modules Routes 
 Route::resource('tenant-prospects', App\Http\Controllers\TenantProspectController::class);
 Route::resource('leases', App\Http\Controllers\LeaseController::class);
- Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,
+Route::get('download/tenant-prospects', [App\Http\Controllers\TenantProspectController::class,
     'downloadPDF'])->name('download.tenant-prospects'); 
- Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
+Route::get('download/leases', [App\Http\Controllers\LeaseController::class,
     'downloadPDF'])->name('download.leases');
- Route::get('leases-attachment/delete/{id}', [App\Http\Controllers\LeaseController::class,
+Route::get('leases-attachment/delete/{id}', [App\Http\Controllers\LeaseController::class,
     'deleteAttachment'])->name('leases.attachment.delete'); 
 
- Route::post('leases-attachment/update/{id}', [App\Http\Controllers\LeaseController::class,
+Route::post('leases-attachment/update/{id}', [App\Http\Controllers\LeaseController::class,
     'updateAttachment'])->name('leases.attachment.update');
+
+Route::post('leases/send-mail', [App\Http\Controllers\LeaseController::class,
+    'sendMail'])->name('leases.send.mail');
 
 
 

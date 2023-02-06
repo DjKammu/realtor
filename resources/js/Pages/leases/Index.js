@@ -3,9 +3,10 @@ import Layout from '../../layouts/Layout';
 import {Inertia} from '@inertiajs/inertia';
 import { InertiaLink, usePage } from '@inertiajs/inertia-react'
 import { sortOrderBy } from '@/hooks/constants';
-import Pagination from '@/Pagination';
-import Favourite from '@/Favourite';
 import Select from 'react-select';
+import Email from '@/Email';
+import Favourite from '@/Favourite';
+import Pagination from '@/Pagination';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -24,11 +25,18 @@ const Index = (props) => {
 
       const [showingDate, setShowingDate] = useState(new Date(showing_date));
 
+      const [checkedState, setCheckedState] = useState(
+        new Array(leases.data.length).fill(false)
+        );
+
+      const [mailProperty, setMailProperty] = useState(null)
+
       const [form, setForm] = useState({
               property:  property,
               status: status
             })
 
+    
       const deleteFunc = (e) => {
         e.preventDefault()
         
@@ -52,38 +60,28 @@ const Index = (props) => {
                   property: form.property,
                   status: form.status
               })
-
     }
 
+   const handleSelectChange = (selectedOption) => {
+     setForm(form => ({
+          ...form,
+          property: selectedOption.value,
+          // suite_id   : null
+      }));
 
-       const handleSelectChange = (selectedOption) => {
-         setForm(form => ({
-              ...form,
-              property: selectedOption.value,
-              // suite_id   : null
-          }));
+    } 
 
-         //  setSelectedSuiteOption([]);
-         //  setSuites([]);
-        
-         // axios({
-         //    url: '/get-suites/?id='+selectedOption.value,
-         //    headers: {
-         //      'Content-Type': 'text/html'
-         //    }
-         //  })
-         //  .then(response => {
-         //    // ? returns undefined if variable is undefined
-         //    // if( response.data?.errors?.length ) this.setState({errors: response.data.errors})
-              
-         //    if(response.data.data.length) { setSuites([...suitNullArr,...response.data.data]) }
-         //  })
-         //  .catch(response => {
-         //    console.log(response)
-         //    this.setState({errors: ['Try it again later please.']})
-         //  });
 
-      } 
+  const handleOnChange = (e) => {
+      const key = e.target.name;
+      const value = e.target.value;
+      const updatedCheckedState = checkedState.map((item, index) =>
+        index == key ? !item : false
+      );
+     setCheckedState(updatedCheckedState);
+     setMailProperty(value);
+  };
+
 
     const handleChange = e =>   {
       const key = e.target.id;
@@ -94,13 +92,12 @@ const Index = (props) => {
       }));
     }
 
-  const handleSelectDateChange = (option) => {
-     setForm(form => ({
-          ...form,
-          date: option.value
-      }));
-
-  }
+    const handleSelectDateChange = (option) => {
+       setForm(form => ({
+            ...form,
+            date: option.value
+        }));
+    }
 
   const handleShowingDateChange = (date) => {
      setShowingDate(date);
@@ -118,8 +115,6 @@ const Index = (props) => {
           status: option.value
       }));
   }
-
-
 
     return (
         <div>
@@ -159,9 +154,7 @@ const Index = (props) => {
                                     <a href="/download/leases"  className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
                                         Download
                                     </a>
-                                    <button onClick={handleSubmit} className="block w-full px-4 py-2 text-white bg-black border-l rounded ">
-                                        Email
-                                    </button>
+                                    <Email url="leases/send-mail" id={mailProperty} title='Lease' />
                                 </div>
                             </div>
 
@@ -171,7 +164,8 @@ const Index = (props) => {
                                     <table className="table-fixed w-full">
                                         <thead>
                                             <tr className="bg-gray-100">
-                                               
+                                                <th className="w-12">
+                                                </th>
                                                 <th className="px-4 py-2">Property
                                                  <i onClick={sortOrderBy('property_id', 'asc')} 
                                                 className="fa fa-sort-asc"></i>
@@ -212,6 +206,17 @@ const Index = (props) => {
                                         <tbody>
                                             {leases.data.map((lease,key) => (
                                                 <tr key={key}>
+                                                    <td className="border px-4 py-2">
+                                                     <input className="form-check-input h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 my-1 align-top bg-no-repeat bg-center bg-contain float-left cursor-pointer" 
+                                                      type="checkbox"
+                                                      id={`custom-checkbox-${key}`}
+                                                      name={key}
+                                                      value={lease.id}
+                                                      checked={checkedState[key]}
+                                                      onChange={handleOnChange}
+                                                       />
+  
+                                                    </td>
                                                     <td className="border px-4 py-2">{ lease.property }</td>
                                                     <td className="border px-4 py-2">{ lease.suite }</td>
                                                     <td className="border px-4 py-2">{ lease.tenant_name }</td>

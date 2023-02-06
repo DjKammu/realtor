@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MailTo;
 use App\Models\ShowingStatus;
 use App\Models\LeasingStatus;
 use App\Models\TenantUse;
@@ -462,4 +463,44 @@ class LeaseController extends Controller
         ]);
 
     }
+
+     public function sendMail(Request $request){
+         set_time_limit(0);
+          $lease = Lease::find($request->id); 
+
+          $files =@$lease->getMediaPathWithExtension()['file'] ? [@$lease->getMediaPathWithExtension()] : @$lease->getMediaPathWithExtension();
+
+          $files =  ($files && count($files) > 0) ? @$files->map(function($file){
+               return  $file['public_path'];
+          })->toArray() : [];
+
+          $ccUsers = ($request->filled('cc')) ? explode(',',$request->cc) : [];
+          $bccUsers = ($request->filled('cc')) ? explode(',',$request->bcc) : [];
+
+          $data = [
+            'heading' => '',
+            'file' => '' ,
+            'files' => $files ,
+            'subject' => $request->subject,
+            'content' => $request->message,
+            'replyTo' => $request->recipient
+          ];
+
+      
+        dispatch(
+        function() use ($request, $data, $ccUsers, $bccUsers){
+         $mail = \Mail::to($request->recipient);
+           if(array_filter($ccUsers)  &&  count($ccUsers) > 0){
+            $mail->cc($ccUsers);
+           }
+           if(array_filter($bccUsers)  && count($bccUsers) > 0){
+            $mail->bcc($bccUsers);
+           }
+           $mail->send(new MailTo($data));
+        }
+       )->afterResponse();
+
+          
+        return redirect()->back()->with('message', 'Sent Successfully!');
+     }
 }

@@ -98,9 +98,6 @@ const Edit = (props) => {
         console.log(response)
         this.setState({errors: ['Try it again later please.']})
       });
-
-       
-
     }
 
 

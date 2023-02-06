@@ -45,7 +45,7 @@ export default function Favourite() {
     const [checked, setChecked] = useState(false);
 
     const handleChange = () => {
-        setChecked(!checked);
+         setChecked(!checked);
          setForm(form => ({
               ...form,
               checked: !checked

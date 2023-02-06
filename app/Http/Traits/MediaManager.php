@@ -123,6 +123,7 @@ trait MediaManager {
 
       if($extesion){
          return [
+               'public_path' => ($file) ?  public_path($file->path.'/'.$file->file_name) : null ,
                'file' => ($file) ?  asset($file->path.'/'.$file->file_name) : null ,
                'ext' => ($file) ?  @pathinfo($file->file_name)['extension']: null,
                'name' => ($file) ?  @$file->name  : null,
